@@ -1,0 +1,23 @@
+﻿100012000:
+  message: "zookeeper 非预期异常"
+
+100012001:
+  message: "zookeeper 未启动或者连接丢失"
+
+100012002:
+  message: "zookeeper 创建节点失败"
+  
+100012003:
+  message: "zookeeper 节点已存在"  
+    
+100012004:
+  message: "zookeeper 节点不存在"  
+
+100012005:
+  message: "zookeeper 获取节点数据失败"  
+  
+100012006:
+  message: "zookeeper 修改节点数据失败"  
+
+100012007:
+  message: "zookeeper 删除节点失败" 

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- redis template definition -->
+    <bean id="stringRedisSerializer"
+            class="org.springframework.data.redis.serializer.StringRedisSerializer"/>
+            
+        
+ 
+          
+   <bean id="jdkSerializationRedisSerializer"
+            class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer"/>          
+          
+          
+            
+    <!-- pool config -->
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxTotal" value="${redis.pool.maxTotal:50}" />
+        <property name="maxIdle" value="${redis.pool.maxIdle:20}" />
+        <property name="minIdle" value="${redis.pool.minIdle:20}"/>
+        <property name="maxWaitMillis" value="${redis.pool.maxWaitMillis:2000}" />
+        <property name="testOnBorrow" value="${redis.pool.testOnBorrow:false}" />
+        <property name="testWhileIdle" value="${redis.pool.testWhileIdle:false}"/>
+    </bean>
+
+
+
+    <bean id="shardedJedisPool" class="redis.clients.jedis.ShardedJedisPool">  
+        <constructor-arg index="0" ref="jedisPoolConfig" />  
+        <constructor-arg index="1">  
+            <list>  
+                <bean class="redis.clients.jedis.JedisShardInfo">  
+                    <constructor-arg name="host" value="127.0.0.1" />  
+                    <constructor-arg name="port" value="6379" />  
+                    <constructor-arg name="timeout" value="2000" />  
+                    <property name="password" value="${redis.notsync.twemproxy.auth:''}"/>
+                    
+                </bean>  
+            </list>  
+        </constructor-arg>  
+    </bean>
+
+
+
+
+    <!--读写，不主从同步-->     
+    <bean id="multJedisConnectionFactory" class="com.framework.core.cache.redis.proxy.MultJedisConnectionFactory"
+          p:timeout="200"
+          p:poolConfig-ref="jedisPoolConfig"
+          p:tweproxyAddrs="${redis.notsync.twemproxy.addresses:127.0.0.1:6379}"
+          p:password="${redis.notsync.twemproxy.auth:''}"
+          p:dbIndex="${redis.notsync.twemproxy.database:0}" />   
+
+    <bean id="gracefulRedisTemplate"
+          class="com.framework.core.cache.redis.GracefulRedisTemplate"   primary="true"
+          p:connectionFactory-ref="multJedisConnectionFactory"
+          p:keySerializer-ref="stringRedisSerializer"
+          p:valueSerializer-ref="stringRedisSerializer"
+          p:hashKeySerializer-ref="stringRedisSerializer"
+          
+          />
+          
+
+    <bean id="redisValueOperations" class="com.framework.core.cache.redis.RedisValueOperations" 
+       p:valueOperations-ref="gracefulRedisTemplate" p:valueOperationsReadOnly-ref="gracefulRedisTemplate" />
+  
+    
+    <bean id="redisSetOperations" class="com.framework.core.cache.redis.RedisSetOperations" 
+       p:setOperations-ref="gracefulRedisTemplate" p:setOperationsReadOnly-ref="gracefulRedisTemplate" />
+
+    
+    <bean id="redisZSetOperations" class="com.framework.core.cache.redis.RedisZSetOperations"  
+       p:zsetOperations-ref="gracefulRedisTemplate" p:zsetOperationsReadOnly-ref="gracefulRedisTemplate" />
+    
+    
+    <bean id="redisListOperations" class="com.framework.core.cache.redis.RedisListOperations" 
+       p:listOperations-ref="gracefulRedisTemplate" p:listOperationsReadOnly-ref="gracefulRedisTemplate" />
+
+    <bean id="redisHashOperations" class="com.framework.core.cache.redis.RedisHashOperations" 
+       p:hashOperations-ref="gracefulRedisTemplate" p:hashOperationsReadOnly-ref="gracefulRedisTemplate" />
+
+
+       <!--jedis 存放 对象，不用string 序列化，用默认的jdk序列化-->
+        <bean id="jedisExcuteTemplate" class="com.framework.core.cache.redis.proxy.jedis.JedisExcuteTemplate"
+    p:connectionFactory-ref="multJedisConnectionFactory"/>
+
+       <bean id="jedisClient" class="com.framework.core.cache.redis.proxy.jedis.impl.JedisClientImpl"
+         p:jedisExcuteTemplate-ref="jedisExcuteTemplate"/> 
+
+
+
+    <bean id="redisHelper" class="com.framework.core.cache.redis.utils.RedisHelper" >
+          <!--  -->
+          <property name="gracefulRedisTemplate" ref="gracefulRedisTemplate" />
+          <property name="redisValueOperations" ref="redisValueOperations" />
+          <property name="redisHashOperations" ref="redisHashOperations" />
+          
+    </bean>    
+    
+    
+
+    
+
+</beans>

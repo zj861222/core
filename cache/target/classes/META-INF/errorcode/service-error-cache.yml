@@ -1,0 +1,15 @@
+﻿100003001:
+  message: "Redis set expire 操作失败"
+
+100003002:
+  message: "Redis set 操作失败"
+
+100003003:
+  message: "Redis get 操作失败"
+  
+100003004:
+  message: "Redis delete 操作失败"  
+    
+100003005:
+  message: "Redis 加锁失败"  
+

@@ -1,0 +1,582 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="personalSale" pageWidth="792" pageHeight="842" columnWidth="732" leftMargin="30" rightMargin="30" topMargin="0" bottomMargin="20">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<style name="border_4_16" isDefault="false" mode="Opaque" backcolor="#BFE1FF" hAlign="Center" vAlign="Middle" fontName="宋体" fontSize="16" isBold="true" pdfFontName="simhei.ttf" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true">
+		<box>
+			<topPen lineWidth="0.0" lineStyle="Solid"/>
+			<leftPen lineWidth="0.5" lineStyle="Solid"/>
+			<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+			<rightPen lineWidth="0.0" lineStyle="Solid"/>
+		</box>
+	</style>
+	<style name="border_4_12" isDefault="true" mode="Opaque" backcolor="#F0F8FF" hAlign="Justified" vAlign="Middle" fontName="宋体" fontSize="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true">
+		<box>
+			<topPen lineWidth="0.0" lineStyle="Solid"/>
+			<leftPen lineWidth="0.5" lineStyle="Solid"/>
+			<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+			<rightPen lineWidth="0.0" lineStyle="Solid"/>
+		</box>
+	</style>
+	<style name="border_4_right_12" isDefault="false" style="border_4_12" mode="Opaque" backcolor="#F0F8FF" hAlign="Right" vAlign="Middle" fontName="Times New Roman" fontSize="12" isBold="false" pdfFontName="Times-Roman">
+		<box rightPadding="5">
+			<topPen lineWidth="0.0" lineStyle="Solid"/>
+			<leftPen lineWidth="0.5" lineStyle="Solid"/>
+			<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+			<rightPen lineWidth="0.0" lineStyle="Solid"/>
+		</box>
+	</style>
+	<style name="border_4_12_link" isDefault="true" mode="Opaque" forecolor="#3333FF" backcolor="#F0F8FF" hAlign="Justified" vAlign="Middle" fontName="宋体" fontSize="12" isUnderline="true" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true">
+		<box leftPadding="5">
+			<topPen lineWidth="0.0" lineStyle="Solid"/>
+			<leftPen lineWidth="0.5" lineStyle="Solid"/>
+			<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+			<rightPen lineWidth="0.0" lineStyle="Solid"/>
+		</box>
+	</style>
+	<style name="border_4_20" isDefault="false" hAlign="Center" vAlign="Top" fontName="宋体" fontSize="20" isBold="true" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true">
+		<box>
+			<topPen lineWidth="0.0" lineStyle="Solid"/>
+			<leftPen lineWidth="0.0" lineStyle="Solid"/>
+			<bottomPen lineWidth="0.0" lineStyle="Solid"/>
+			<rightPen lineWidth="0.0" lineStyle="Solid"/>
+		</box>
+	</style>
+	<style name="pie_backcolor" isDefault="false" mode="Opaque" backcolor="#F0F8FF" fontName="宋体" fontSize="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+		</box>
+	</style>
+	<parameter name="customer" class="java.lang.String"/>
+	<parameter name="startDate" class="java.lang.String"/>
+	<parameter name="endDate" class="java.lang.String"/>
+	<parameter name="whereStr" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[($P{startDate}==null||$P{startDate}.equals("")?"":" AND create_date >= timestamp'"+$P{startDate}+"' ")+
+                                 ($P{endDate}==null||$P{endDate}.equals("")?"":" AND create_date <= timestamp'"+$P{endDate}+"' ") + 
+                                 ($P{customer}==null||$P{customer}.equals("")?"":" AND customer_id = "+$P{customer} )]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT SUM(os.actual_amount) as price1, -- 金额
+                                round((SUM(actual_amount)+ 0.0)/(select sum(actual_amount) as priceSum from osell_zhongdpp_sale_view WHERE 1=1 $P!{whereStr})*100,2) as price2,
+                                round((SUM(actual_amount)+ 0.0)/(select sum(actual_amount) as priceSum from osell_zhongdpp_sale_view WHERE 1=1 $P!{whereStr})*100,2)||'%' as pricerate,
+                                SUM(os.actual_count) AS quantity1,  -- 数量
+                                round((SUM(os.actual_count)+ 0.0)/(select sum(actual_count) as quantitySum from osell_zhongdpp_sale_view WHERE 1=1 $P!{whereStr})*100,2) as quantity2,
+                                round((SUM(os.actual_count)+ 0.0)/(select sum(actual_count) as quantitySum from osell_zhongdpp_sale_view WHERE 1=1 $P!{whereStr})*100,2)||'%' as quantityrate, 
+                                os."typename" AS ptname,  
+                                os."type_id" AS productType, -- 商品类型
+                                os."productname" AS pname,        
+                                os."product_id" AS product,  -- 商品
+                                os."customername" AS ptname2, -- 门店
+                                os.customer_id AS productType2 
+                                FROM osell_zhongdpp_sale_view os WHERE 1=1 $P!{whereStr}
+                                GROUP BY ptname2,productType2,ptname,productType,pname,product
+                                ORDER BY ptname2,productType2,ptname,productType,pname,product]]>
+	</queryString>
+	<field name="price1" class="java.math.BigDecimal"/>
+	<field name="price2" class="java.math.BigDecimal"/>
+	<field name="pricerate" class="java.lang.String"/>
+	<field name="quantity1" class="java.math.BigDecimal"/>
+	<field name="quantity2" class="java.math.BigDecimal"/>
+	<field name="quantityrate" class="java.lang.String"/>
+	<field name="ptname" class="java.lang.String"/>
+	<field name="producttype" class="java.lang.Long"/>
+	<field name="pname" class="java.lang.String"/>
+	<field name="product" class="java.lang.Long"/>
+	<field name="ptname2" class="java.lang.String"/>
+	<field name="producttype2" class="java.lang.Long"/>
+	<variable name="quantitySum" class="java.math.BigDecimal" resetType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$F{quantity1}]]></variableExpression>
+	</variable>
+	<variable name="priceSum" class="java.math.BigDecimal" resetType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$F{price1}]]></variableExpression>
+	</variable>
+	<variable name="pricerateSum" class="java.math.BigDecimal" resetType="Group" resetGroup="ptname" calculation="Sum">
+		<variableExpression><![CDATA[$F{price2}]]></variableExpression>
+	</variable>
+	<variable name="quantitysubtotal" class="java.math.BigDecimal" resetType="Group" resetGroup="ptname" calculation="Sum">
+		<variableExpression><![CDATA[$F{quantity1}]]></variableExpression>
+	</variable>
+	<variable name="quantityratesubtotal" class="java.math.BigDecimal" resetType="Group" resetGroup="ptname" calculation="Sum">
+		<variableExpression><![CDATA[$F{quantity2}]]></variableExpression>
+	</variable>
+	<variable name="pricesubtotal" class="java.math.BigDecimal" resetType="Group" resetGroup="ptname" calculation="Sum">
+		<variableExpression><![CDATA[$F{price1}]]></variableExpression>
+	</variable>
+	<variable name="priceratesubtotal" class="java.math.BigDecimal" resetType="Group" resetGroup="ptname" calculation="Sum">
+		<variableExpression><![CDATA[$F{price2}]]></variableExpression>
+	</variable>
+	<group name="ptname">
+		<groupExpression><![CDATA[$F{ptname}]]></groupExpression>
+		<groupHeader>
+			<band splitType="Stretch"/>
+		</groupHeader>
+		<groupFooter>
+			<band height="20" splitType="Stretch">
+				<textField evaluationTime="Auto" pattern="" isBlankWhenNull="false">
+					<reportElement key="textField-8" style="border_4_12" positionType="Float" stretchType="RelativeToBandHeight" x="117" y="0" width="113" height="20" backcolor="#D8EDF1"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font isBold="true" isUnderline="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["小计"]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Auto" pattern="" isBlankWhenNull="false">
+					<reportElement key="textField-9" style="border_4_12" positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="117" height="20" backcolor="#D8EDF1"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font isUnderline="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[""]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Auto" pattern="" isBlankWhenNull="false">
+					<reportElement key="textField-10" style="border_4_right_12" positionType="Float" stretchType="RelativeToBandHeight" x="330" y="0" width="100" height="20" backcolor="#D8EDF1"/>
+					<box rightPadding="5">
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement/>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{quantitysubtotal}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Auto" pattern="" isBlankWhenNull="false">
+					<reportElement key="textField-11" style="border_4_right_12" positionType="Float" stretchType="RelativeToBandHeight" x="430" y="0" width="100" height="20" backcolor="#D8EDF1"/>
+					<box rightPadding="5">
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$V{quantityratesubtotal}+"%"]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Auto" pattern="" isBlankWhenNull="false">
+					<reportElement key="textField-12" style="border_4_right_12" positionType="Float" stretchType="RelativeToBandHeight" x="530" y="0" width="100" height="20" backcolor="#D8EDF1"/>
+					<box rightPadding="5">
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement/>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{pricesubtotal}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Auto" pattern="" isBlankWhenNull="false">
+					<reportElement key="textField-13" style="border_4_right_12" positionType="Float" stretchType="RelativeToBandHeight" x="630" y="0" width="102" height="20" backcolor="#D8EDF1"/>
+					<box rightPadding="5">
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$V{priceratesubtotal}+"%"]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Auto" pattern="" isBlankWhenNull="false">
+					<reportElement key="textField-14" style="border_4_12" positionType="Float" stretchType="RelativeToBandHeight" x="230" y="0" width="100" height="20" backcolor="#D8EDF1"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font isUnderline="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[""]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="40" splitType="Stretch">
+			<staticText>
+				<reportElement key="staticText-20" style="border_4_20" x="0" y="0" width="732" height="40"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement/>
+				<text><![CDATA[重点单品销量报表]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="25" splitType="Stretch">
+			<staticText>
+				<reportElement key="staticText-3" style="border_4_16" x="0" y="0" width="117" height="25"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement/>
+				<text><![CDATA[门店]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-4" style="border_4_16" x="117" y="0" width="113" height="25"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement/>
+				<text><![CDATA[产品类型]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-6" style="border_4_16" x="430" y="0" width="100" height="25"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement/>
+				<text><![CDATA[实销量占比]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-7" style="border_4_16" x="330" y="0" width="100" height="25"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement/>
+				<text><![CDATA[实销量]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-8" style="border_4_16" x="530" y="0" width="100" height="25"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement/>
+				<text><![CDATA[实销金额]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-9" style="border_4_16" x="630" y="0" width="102" height="25"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement/>
+				<text><![CDATA[实销金额占比]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-10" style="border_4_16" x="230" y="0" width="100" height="25"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement/>
+				<text><![CDATA[产品名称]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField evaluationTime="Auto" pattern="" isBlankWhenNull="true" hyperlinkType="Reference" hyperlinkTarget="Parent">
+				<reportElement key="textField" style="border_4_12_link" positionType="Float" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="117" height="20"/>
+				<box leftPadding="5" rightPadding="5">
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font isUnderline="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ptname2}]]></textFieldExpression>
+				<anchorNameExpression><![CDATA[$F{ptname2}]]></anchorNameExpression>
+			</textField>
+			<textField evaluationTime="Auto" pattern="" isBlankWhenNull="false" hyperlinkType="Reference" hyperlinkTarget="Parent">
+				<reportElement key="textField" style="border_4_12_link" positionType="Float" stretchType="RelativeToBandHeight" x="117" y="0" width="113" height="20"/>
+				<box leftPadding="5" rightPadding="5">
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font isUnderline="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ptname}]]></textFieldExpression>
+				<anchorNameExpression><![CDATA[$F{ptname2}+$F{ptname}]]></anchorNameExpression>
+			</textField>
+			<textField evaluationTime="Auto" pattern="" isBlankWhenNull="false" hyperlinkType="Reference" hyperlinkTarget="Parent">
+				<reportElement key="textField-1" style="border_4_12_link" stretchType="RelativeToBandHeight" mode="Opaque" x="230" y="0" width="100" height="20"/>
+				<box leftPadding="5" rightPadding="5">
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font isUnderline="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{pname}]]></textFieldExpression>
+				<anchorNameExpression><![CDATA[$F{ptname2}+$F{pname}+$F{ptname}]]></anchorNameExpression>
+				<hyperlinkParameter name="product">
+					<hyperlinkParameterExpression class="java.lang.Long"><![CDATA[$F{product}]]></hyperlinkParameterExpression>
+				</hyperlinkParameter>
+			</textField>
+			<textField evaluationTime="Auto" pattern="" isBlankWhenNull="false">
+				<reportElement key="textField-2" style="border_4_right_12" positionType="Float" stretchType="RelativeToBandHeight" x="330" y="0" width="100" height="20"/>
+				<box rightPadding="5">
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{quantity1}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Auto" pattern="" isBlankWhenNull="false">
+				<reportElement key="textField-3" style="border_4_right_12" positionType="Float" stretchType="RelativeToBandHeight" x="530" y="0" width="100" height="20"/>
+				<box rightPadding="5">
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{price1}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Auto" pattern="" isBlankWhenNull="false">
+				<reportElement key="textField-4" style="border_4_right_12" positionType="Float" stretchType="RelativeToBandHeight" x="430" y="0" width="100" height="20"/>
+				<box rightPadding="5">
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{quantityrate}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Auto" pattern="" isBlankWhenNull="false">
+				<reportElement key="textField-5" style="border_4_right_12" positionType="Float" stretchType="RelativeToBandHeight" x="630" y="0" width="102" height="20"/>
+				<box rightPadding="5">
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{pricerate}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="299" splitType="Stretch">
+			<staticText>
+				<reportElement key="staticText-11" style="border_4_16" x="0" y="0" width="117" height="25"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement/>
+				<text><![CDATA[合计]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-12" style="border_4_16" x="117" y="0" width="113" height="25"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-13" style="border_4_16" x="230" y="0" width="100" height="25"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-15" style="border_4_16" x="430" y="0" width="100" height="25"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-17" style="border_4_16" x="630" y="0" width="102" height="25"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<textField evaluationTime="Auto" pattern="" isBlankWhenNull="false">
+				<reportElement key="textField-6" style="border_4_right_12" positionType="Float" stretchType="RelativeToBandHeight" x="330" y="0" width="100" height="25" backcolor="#BFE1FF"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{quantitySum}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Auto" pattern="" isBlankWhenNull="false">
+				<reportElement key="textField-7" style="border_4_right_12" positionType="Float" stretchType="RelativeToBandHeight" x="530" y="0" width="100" height="25" backcolor="#BFE1FF"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{priceSum}]]></textFieldExpression>
+			</textField>
+			<pie3DChart>
+				<chart>
+					<reportElement key="element-1" style="pie_backcolor" positionType="FixRelativeToBottom" x="371" y="67" width="361" height="231"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend textColor="#000000" backgroundColor="#FFFFFF"/>
+				</chart>
+				<pieDataset>
+					<keyExpression><![CDATA[$F{pname}]]></keyExpression>
+					<valueExpression><![CDATA[$F{price1}]]></valueExpression>
+					<labelExpression><![CDATA[$F{pricerate}]]></labelExpression>
+				</pieDataset>
+				<pie3DPlot depthFactor="0.2">
+					<plot/>
+					<itemLabel color="#3333FF" backgroundColor="#F0F8FF"/>
+				</pie3DPlot>
+			</pie3DChart>
+			<pie3DChart>
+				<chart evaluationTime="Report">
+					<reportElement key="element-2" style="pie_backcolor" positionType="FixRelativeToBottom" x="0" y="67" width="360" height="231"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend textColor="#000000" backgroundColor="#F0F8FF"/>
+				</chart>
+				<pieDataset>
+					<dataset resetType="None"/>
+					<keyExpression><![CDATA[$F{ptname}]]></keyExpression>
+					<valueExpression><![CDATA[$V{pricerateSum}]]></valueExpression>
+					<labelExpression><![CDATA[$V{pricerateSum}+"%"]]></labelExpression>
+				</pieDataset>
+				<pie3DPlot depthFactor="0.2">
+					<plot backcolor="#F0F8FF"/>
+					<itemLabel color="#3333FF" backgroundColor="#F0F8FF"/>
+				</pie3DPlot>
+			</pie3DChart>
+			<staticText>
+				<reportElement key="staticText-18" style="border_4_20" x="0" y="25" width="360" height="42"/>
+				<box>
+					<pen lineWidth="0.0" lineColor="#FFFFFF"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="20"/>
+				</textElement>
+				<text><![CDATA[类型销售金额占比]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-19" style="border_4_20" x="371" y="25" width="361" height="42"/>
+				<box>
+					<pen lineWidth="0.0" lineColor="#FFFFFF"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="20"/>
+				</textElement>
+				<text><![CDATA[商品销售金额占比]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

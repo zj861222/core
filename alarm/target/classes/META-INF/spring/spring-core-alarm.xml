@@ -1,0 +1,71 @@
+<?xml  version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--支持异步的事件-->
+    <bean  id="event-discard-policy" class="java.util.concurrent.ThreadPoolExecutor.DiscardPolicy"/>
+    <bean id="event-thread-pool-executor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="queueCapacity" value="50000"/>
+        <property name="maxPoolSize" value="10"/>
+        <property name="rejectedExecutionHandler" ref="event-discard-policy"/>
+    </bean>
+    <bean id="applicationEventMulticaster"
+          class="org.springframework.context.event.SimpleApplicationEventMulticaster">
+        <property name="taskExecutor" ref="event-thread-pool-executor"/>
+    </bean>
+
+
+    <!-- influxdb ref-->
+    <bean id="influxdbHolder" class="com.framework.core.alarm.influxdb.InfluxDBHolder">
+        <constructor-arg name="dbUrl" value="${alarm.influxdb.url:http://127.0.0.1:8086}" />
+        <constructor-arg name="user"  value="${alarm.influxdb.user:root}"/>
+        <constructor-arg name="password"  value="${alarm.influxdb.password:root}"/>
+    </bean>
+
+    <bean id="eventReporter" class="com.framework.core.alarm.influxdb.InfluxDataReporter">
+        <constructor-arg name="influxDBHolder" ref="influxdbHolder"/>
+        <constructor-arg name="retentionPolicy" value="${alarm.influxdb.retentionPolicy:default}"/>
+     </bean>
+
+
+
+    <bean id="serviceAccessEventHandler" class="com.framework.core.alarm.event.handler.ServiceAccessEventHandler">
+        <property name="eventReporter" ref="eventReporter"/>
+        <property name="tag_context" value="${web.context:default}"/>
+    </bean>
+    
+
+    <bean id="serverExceptionEventHandler" class="com.framework.core.alarm.event.handler.ServerExceptionEventHandler">
+        <property name="eventReporter" ref="eventReporter"/>
+        <property name="tag_context" value="${web.context:default}"/>
+    </bean>
+
+
+    
+    <bean id="strutsThreadProfileInterceptor" class="com.framework.core.alarm.monitor.interceptor.ThreadProfileInterceptor4Struts">
+        <property name="threshold" value="${profile.threshold:500}"/>
+    </bean>
+    
+    
+    <bean id="springMvcThreadProfileInterceptor" class="com.framework.core.alarm.monitor.interceptor.ThreadProfileInterceptor4SpringMvc">
+        <property name="threshold" value="${profile.threshold:500}"/>
+    </bean>    
+    
+    
+
+    <!--service接口调用拦截器-->
+
+    <bean id="serviceMethodInterceptor" class="com.framework.core.alarm.monitor.interceptor.MethodProfileInterceptor">
+    </bean>
+    
+    <!--调用系统自行配置
+    <aop:config>
+        <aop:pointcut id="serviceMethodPoint"
+                      expression="(execution(* com.fh..*.service.*.*(..))) or (execution(* com.fiberhome.*.*.service.*.*(..))) "/>
+        <aop:advisor pointcut-ref="serviceMethodPoint" advice-ref="serviceMethodInterceptor"/>
+    </aop:config>
+    -->
+    
+
+</beans>

@@ -1,0 +1,26 @@
+﻿100011001:
+  message: "登录生成token失败"
+
+100011002:
+  message: "解析token失败"
+
+100011003:
+  message: "非法的refresh token参数"
+  
+100011004:
+  message: "refresh token过期"  
+    
+100011005:
+  message: "token过期"  
+
+100011006:
+  message: "刷新token失败"  
+  
+100011007:
+  message: "无效的token信息"  
+
+100011008:
+  message: "token超时时间设置不合法"  
+  
+100011009:
+  message: "session已失效"     
