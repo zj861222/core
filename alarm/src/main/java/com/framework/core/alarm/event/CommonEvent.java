@@ -3,13 +3,15 @@ package com.framework.core.alarm.event;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.springframework.context.ApplicationEvent;
 
+import com.framework.core.alarm.EventTypeEnum;
+
 /**
  *
  * 通用的事件
  *
  * Created by zhangjun.
  */
-public class CommonEvent extends ApplicationEvent {
+public abstract class CommonEvent extends ApplicationEvent {
 
 	/**
 	 * @Fields serialVersionUID
@@ -40,4 +42,8 @@ public class CommonEvent extends ApplicationEvent {
 	public String getName() {
 		return name;
 	}
+	
+	
+	public abstract EventTypeEnum getEventType() ;
+	
 }

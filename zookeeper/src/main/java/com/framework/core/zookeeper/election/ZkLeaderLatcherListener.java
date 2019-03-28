@@ -16,7 +16,7 @@ public abstract class ZkLeaderLatcherListener   {
         return this.isLeader;
     }
 
-    void setupLeader(boolean isLeader){
+    public void setupLeader(boolean isLeader){
       this.isLeader = isLeader;
     }
 

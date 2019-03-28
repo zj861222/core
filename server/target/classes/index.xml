@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<IndexConfigs>
+    <client name="elasticsearch">
+    
+        <!-- 
+        <factory>com.yoho.search.index.es.ESIndexClientFactory</factory>
+         -->
+        <properties>
+            <property key="es.cluster.name" value="zj-es-cluster"/>
+            <property key="es.servers" value="127.0.0.1:9300,127.0.0.1:9301"/>
+        </properties>         
+         
+        <index>
+            <aliasName>brand</aliasName>
+            <properties>
+                <property key="number_of_shards" value="1"/>
+                <property key="number_of_replicas" value="2"/>
+                <property key="refresh_interval" value="1"/>
+                <property key="translog.flush_threshold_ops" value="5000"/>
+            </properties>
+            <builderClass>com.waiqin365.search.BrandIndexBuilder</builderClass>
+            <mappingFile>esmapping/brand.json</mappingFile>
+        </index>
+        
+        <!-- 
+        <index>
+            <<aliasName>>size</<aliasName>>
+            <properties>
+                <property key="number_of_shards" value="1"/>
+                <property key="number_of_replicas" value="2"/>
+                <property key="refresh_interval" value="1"/>
+                <property key="translog.flush_threshold_ops" value="5000"/>
+            </properties>
+            <builderClass>com.yoho.search.index.service.impl.SizeIndexBuilder</builderClass>
+            <mappingFile>esmapping/size.json</mappingFile>
+        </index>
+         -->
+        
+    </client>
+</IndexConfigs>

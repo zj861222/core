@@ -25,6 +25,19 @@ public class ServiceAccessEventHandler extends AbstractEventHandler<ServiceAcces
         }
 
         args.put("cost", event.getCost());
+        
+        //用户id
+        if(event.getUserId()>0) {
+        	args.put("user_id",  String.valueOf(event.getUserId()));
+        }
+
+        //企业id
+        if(event.getTenantId()>0) {
+        	args.put("tenant_id",  String.valueOf(event.getTenantId()));
+        }
+
+        args.put("status_code", String.valueOf(event.getResponse_code()));
+
     }
 
 
@@ -33,10 +46,7 @@ public class ServiceAccessEventHandler extends AbstractEventHandler<ServiceAcces
      */
     @Override
     protected  void addTags(ServiceAccessEvent event, Map<String, String> tags){
-        tags.put("status_code", String.valueOf(event.getResponse_code()));
         tags.put("src_service",  event.getSrcService());
-        //设置标签，标志这个请求是否属于执行慢的请求
-        tags.put("is_slow", event.getCost()>500?"1":"0");
 
     }
 

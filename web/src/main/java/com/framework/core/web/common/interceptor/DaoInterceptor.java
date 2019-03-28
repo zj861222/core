@@ -18,10 +18,8 @@ import org.springframework.util.ClassUtils;
 
 import com.framework.core.dal.exception.DalErrorCode;
 import com.framework.core.error.exception.BizException;
-import com.framework.core.error.exception.code.impl.BaseCode;
-import com.framework.core.web.common.biz.TenantIdDetermin4Dao;
+import com.framework.core.web.common.biz.BizDataFetcher;
 import com.framework.core.web.hystrix.annotation.HystrixDaoConfig;
-import com.framework.core.zookeeper.listener.custom.ZkNodeListener;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
@@ -33,7 +31,8 @@ import com.netflix.hystrix.HystrixCommandProperties;
  * @author zhangjun
  *
  */
-public class DaoInterceptor implements MethodInterceptor, InitializingBean, ApplicationEventPublisherAware,ApplicationContextAware {
+public class DaoInterceptor
+		implements MethodInterceptor, InitializingBean, ApplicationEventPublisherAware, ApplicationContextAware {
 
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -44,14 +43,16 @@ public class DaoInterceptor implements MethodInterceptor, InitializingBean, Appl
 
 	// 数据库默认操作timeout阈值，超过1000ms 认为失败
 	private static final int DATABASE_TIME_OUT = 1000;
-	
-	//web context , for ex: appsvr
+
+	// web context , for ex: appsvr
 	private String context;
-	
-	/**
-	 * 决定dao的 tenantid
-	 */
-	private TenantIdDetermin4Dao tenantIdDetermin4Dao;
+
+	// /**
+	// * 决定dao的 tenantid
+	// */
+	// private TenantIdDetermin4Dao tenantIdDetermin4Dao;
+
+	private BizDataFetcher bizDataFetcher;
 
 	public String getContext() {
 		return context;
@@ -76,7 +77,7 @@ public class DaoInterceptor implements MethodInterceptor, InitializingBean, Appl
 
 		HystrixDaoConfig config = invocation.getMethod().getAnnotation(HystrixDaoConfig.class);
 
-		//加了配置标签，并且设置为不走hystrix发送
+		// 加了配置标签，并且设置为不走hystrix发送
 		if (config == null || !config.useHystrix()) {
 			return doRealWork(invocation);
 		} else {
@@ -134,20 +135,20 @@ public class DaoInterceptor implements MethodInterceptor, InitializingBean, Appl
 		Class<?>[] targetInterfaces = ClassUtils.getAllInterfacesForClass(clazz, clazz.getClassLoader());
 
 		String mapperNamespace = null;
-		
-		//dao不是接口实现
-		if(targetInterfaces == null||targetInterfaces.length ==0) {
-		
+
+		// dao不是接口实现
+		if (targetInterfaces == null || targetInterfaces.length == 0) {
+
 			mapperNamespace = clazz.getName();
-		//接口实现的dao	
+			// 接口实现的dao
 		} else {
 			// dao完整名称，同mapping.xml中的namespace
 			mapperNamespace = targetInterfaces[0].getName();
 		}
 
 		// group name :
-		String groupName = context+"_"+tenantIdDetermin4Dao.getCurTenantId();
-		
+		String groupName = context + "_" + bizDataFetcher.getCurTenantId();
+
 		// 完整的dao名称 com.xxx.xxx.xxxx.insert
 		String dao = mapperNamespace + "." + statementId;
 		logger.debug("call dao method [{}.{}]", dao);
@@ -205,7 +206,7 @@ public class DaoInterceptor implements MethodInterceptor, InitializingBean, Appl
 
 		@Override
 		public Object getFallback() {
-			System.out.println("HystrixDaoCommand-getFallback-start，time=" + System.currentTimeMillis());
+//			System.out.println("HystrixDaoCommand-getFallback-start，time=" + System.currentTimeMillis());
 
 			return null;
 
@@ -216,16 +217,15 @@ public class DaoInterceptor implements MethodInterceptor, InitializingBean, Appl
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 
-		Map<String, TenantIdDetermin4Dao> list = applicationContext.getBeansOfType(TenantIdDetermin4Dao.class);
+		Map<String, BizDataFetcher> list = applicationContext.getBeansOfType(BizDataFetcher.class);
 
-		//判断是否为空
-		if(MapUtils.isEmpty(list) || list.size()>1) {
-			throw new RuntimeException("使用DaoInterceptor请先实现TenantIdDetermin4Dao接口(注册为bean,接口只实现一次)!");
+		// 判断是否为空
+		if (MapUtils.isEmpty(list) || list.size() > 1) {
+			throw new RuntimeException("使用DaoInterceptor请先实现 BizDataFetcher 接口(注册为bean,接口只实现一次)!");
 		}
 
-		
-		for(Entry<String,TenantIdDetermin4Dao> entry:list.entrySet()) {
-			tenantIdDetermin4Dao = entry.getValue();
+		for (Entry<String, BizDataFetcher> entry : list.entrySet()) {
+			bizDataFetcher = entry.getValue();
 		}
 	}
 

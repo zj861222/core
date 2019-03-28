@@ -32,7 +32,11 @@ public enum TokenErrorCode implements ErrorCode
     //session已失效
     EX_LOGIN_IEAGLLE_TOKEN_4_SESSION_EXPIRE (100011009),
 
-
+    //密码被修改需要重新登录
+    EX_LOGIN_RELOGIN_BY_PWD_MODIFIED(100011010),
+    
+    //同一账号在他处登录，强制下限
+    EX_LOGIN_RELOGIN_BY_LOGIN_IN_OTHER_PLACE(100011011),
     
     ;
 

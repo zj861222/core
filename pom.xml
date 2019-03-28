@@ -5,15 +5,15 @@
     <parent>
         <groupId>com.framework</groupId>
         <artifactId>parent</artifactId>
-        <version>0.0.3</version>
+        <version>0.0.13</version>
     </parent>
 
 
 	<groupId>com.framework.core</groupId>
-	<artifactId>core</artifactId>
+	<artifactId>framework-core</artifactId>
 	<packaging>pom</packaging>
-	<name>core</name>
-    <version>0.0.3</version>
+	<name>framework-core</name>
+    <version>0.0.56</version>
     <url>http://maven.apache.org</url>
 
 
@@ -23,7 +23,7 @@
 
             <dependency>
                 <groupId>com.framework.core</groupId>
-                <artifactId>core-error</artifactId>
+                <artifactId>framework-core-error</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -31,14 +31,14 @@
 
             <dependency>
                 <groupId>com.framework.core</groupId>
-                <artifactId>core-common</artifactId>
+                <artifactId>framework-core-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
 
             <dependency>
                 <groupId>com.framework.core</groupId>
-                <artifactId>core-dal</artifactId>
+                <artifactId>framework-core-dal</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -46,33 +46,63 @@
 
             <dependency>
                 <groupId>com.framework.core</groupId>
-                <artifactId>core-cache</artifactId>
+                <artifactId>framework-core-cache</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
 
             <dependency>
                 <groupId>com.framework.core</groupId>
-                <artifactId>core-alarm</artifactId>
+                <artifactId>framework-core-alarm</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
 
             <dependency>
                 <groupId>com.framework.core</groupId>
-                <artifactId>core-zookeeper</artifactId>
+                <artifactId>framework-core-zookeeper</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
 
             <dependency>
                 <groupId>com.framework.core</groupId>
-                <artifactId>core-web</artifactId>
+                <artifactId>framework-core-web</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.framework.core</groupId>
+                <artifactId>framework-core-message</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
 
+            <dependency>
+                <groupId>com.framework.core</groupId>
+                <artifactId>framework-core-task</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
+
+            
+
+            <dependency>
+                <groupId>com.framework.core</groupId>
+                <artifactId>framework-core-search</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            
+
+
+
+            <dependency>
+                <groupId>com.framework.core</groupId>
+                <artifactId>framework-core-kafka</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            
 
 	</dependencies>
 
@@ -85,7 +115,7 @@
         <repository>
             <id>thirdparty</id>
             <name>3rd party</name>
-            <url>http://192.168.3.153:8080/nexus/content/repositories/thirdparty/</url>
+            <url>http://172.31.3.153:8080/nexus/content/repositories/thirdparty/</url>
         </repository>
     </distributionManagement>
 
@@ -292,9 +322,17 @@
         <module>zookeeper</module>   
 
 
+
+        <module>message</module>   
+        <module>task</module>   
+
+
+        <module>kafka</module>   
+
         <module>web</module>
         <!-- server is used to test -->
         <module>server</module>
+        <module>search</module>
 
 
 	</modules>

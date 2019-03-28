@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * 服务调用统计,
  *
- * @author chunhua zhang
+ * @author 
  */
 public class ServiceCallAudit implements ApplicationEventPublisherAware{
 
@@ -24,7 +24,7 @@ public class ServiceCallAudit implements ApplicationEventPublisherAware{
      * @param serviceName
      */
     public void audit(String serviceName,  String path) {
-        publisher.publishEvent(new ServiceCallEvent(serviceName, path, "unknown",  null));
+//        publisher.publishEvent(new ServiceCallEvent(serviceName,serviceName, path,  null));
     }
 
 
@@ -35,7 +35,7 @@ public class ServiceCallAudit implements ApplicationEventPublisherAware{
      * @param e
      */
     public void auditFailed(String serviceName,  String path,Throwable e) {
-        publisher.publishEvent(new ServiceCallEvent(serviceName, path,  "unknown", e));
+//        publisher.publishEvent(new ServiceCallEvent(serviceName,serviceName, path,  e));
     }
 
     @Override

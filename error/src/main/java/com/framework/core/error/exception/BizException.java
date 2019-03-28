@@ -1,5 +1,7 @@
 package com.framework.core.error.exception;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.framework.core.error.exception.code.impl.BaseCode;
 import com.framework.core.error.exception.internel.ErrorCodeLoader;
 
@@ -8,7 +10,7 @@ import com.framework.core.error.exception.internel.ErrorCodeLoader;
  * 
  * @author zhangjun
  */
-public class BizException extends Exception {
+public class BizException extends RuntimeException {
 
 	private static final long serialVersionUID = -7924878864085184620L;
 
@@ -26,7 +28,7 @@ public class BizException extends Exception {
 	 *            错误信息
 	 */
 	public BizException(Throwable cause, String message) {
-		super(message, cause);
+		super(generateMessageWithCodeAndMsg(BaseCode.EX_SYSTEM_UNKNOW.getCode(), message), cause);
 		this.errorCode = BaseCode.EX_SYSTEM_UNKNOW.getCode();
 	}
 
@@ -36,11 +38,10 @@ public class BizException extends Exception {
 	 * @param cause
 	 *            源异常
 	 * 
-	 * @throws BizException
 	 */
 	public BizException(Throwable cause) {
 
-		super(ErrorCodeLoader.getErrorMessageByCode(BaseCode.EX_SYSTEM_UNKNOW.getCode()), cause);
+		super(generateUnknowMessageWithCode(), cause);
 
 		this.errorCode = BaseCode.EX_SYSTEM_UNKNOW.getCode();
 
@@ -57,7 +58,7 @@ public class BizException extends Exception {
 	 *            源异常
 	 */
 	public BizException(int errorCode, String message, Throwable cause) {
-		super(message, cause);
+		super(generateMessageWithCodeAndMsg(errorCode, message), cause);
 		this.errorCode = errorCode;
 	}
 
@@ -71,7 +72,7 @@ public class BizException extends Exception {
 	 * 
 	 */
 	public BizException(String message, Throwable cause) {
-		super(message, cause);
+		super(generateMessageWithCodeAndMsg(BaseCode.EX_SYSTEM_UNKNOW.getCode(), message), cause);
 
 		this.errorCode = BaseCode.EX_SYSTEM_UNKNOW.getCode();
 	}
@@ -85,41 +86,33 @@ public class BizException extends Exception {
 	 *            源异常
 	 */
 	public BizException(int errorCode, String message) {
-		super(message);
+		super(generateMessageWithCodeAndMsg(errorCode, message));
 		this.errorCode = errorCode;
 
 	}
-	
-	
-	
 
 	/**
 	 * 抛出的异常
 	 * 
-	 * @param errorCode errorCode
-	 * @throws BizException 
+	 * @param errorCode
+	 *            errorCode
 	 */
-	public BizException(int errorCode)  {
-		super(ErrorCodeLoader.getErrorMessageByCode(BaseCode.EX_SYSTEM_UNKNOW.getCode()));
+	public BizException(int errorCode) {
+		super(generateMessageWithCode(errorCode));
 		this.errorCode = errorCode;
 
 	}
-	
-	
-	
 
-    /**
-     * 
-     * @param errorCode
-     * @param cause
-     */
-	public BizException(int errorCode, Throwable cause)  {
-		super(ErrorCodeLoader.getErrorMessageByCode(BaseCode.EX_SYSTEM_UNKNOW.getCode()),cause);
+	/**
+	 * 
+	 * @param errorCode
+	 * @param cause
+	 */
+	public BizException(int errorCode, Throwable cause) {
+		super(generateMessageWithCode(errorCode), cause);
 		this.errorCode = errorCode;
 
-	}	
-	
-	
+	}
 
 	/**
 	 * 获取异常码
@@ -128,6 +121,48 @@ public class BizException extends Exception {
 	 */
 	public int getErrorCode() {
 		return errorCode;
+	}
+
+	/**
+	 * 获取message
+	 * @param code
+	 * @param message
+	 * @return
+	 */
+	private static String generateMessageWithCodeAndMsg(int code, String message) {
+
+		if(StringUtils.isNotEmpty(message)) {
+		    return message;
+		} else {
+			return "系统异常";
+		}
+//		return "[code:" + code + ",message:" + message + "]";
+
+	}
+
+	/**
+	 * 
+	 * @param code
+	 * @param message
+	 * @return
+	 */
+	private static String generateMessageWithCode(int code) {
+		String message = ErrorCodeLoader.getErrorMessageByCode(code);
+		return generateMessageWithCodeAndMsg(code, message);
+
+	}
+
+	/**
+	 * 
+	 * @param code
+	 * @param message
+	 * @return
+	 */
+	private static String generateUnknowMessageWithCode() {
+		int code = BaseCode.EX_SYSTEM_UNKNOW.getCode();
+		String message = ErrorCodeLoader.getErrorMessageByCode(code);
+		return generateMessageWithCodeAndMsg(code, message);
+
 	}
 
 }

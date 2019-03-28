@@ -1,5 +1,8 @@
 package com.framework.core.common.utils;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
 public class StackTraceHelper {
 
 	private static final int MAX_STACK_LEN = 20;
@@ -80,6 +83,27 @@ public class StackTraceHelper {
 		}
 
 		return sb.toString();
+	}
+	
+	
+	/**
+	 * 获取异常里的stack trace
+	 * @param e
+	 * @return
+	 */
+	public static String getStackTrace(Exception e){
+		
+		if(e==null) {
+			return "unknown error";
+		}
+		
+		String stack = ExceptionUtils.getStackTrace(e);
+		
+		if(StringUtils.isEmpty(stack)) {
+			stack = e.getMessage();
+		}
+		
+		return stack;
 	}
 
 }

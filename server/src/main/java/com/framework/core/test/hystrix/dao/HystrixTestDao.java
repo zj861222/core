@@ -1,6 +1,10 @@
 package com.framework.core.test.hystrix.dao;
 
+import javax.annotation.Resource;
+
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.framework.core.web.hystrix.annotation.HystrixDaoConfig;
 
@@ -12,9 +16,15 @@ import com.framework.core.web.hystrix.annotation.HystrixDaoConfig;
 @Component
 public class HystrixTestDao {
 	
-	
+
+
+
+	@Transactional
 	@HystrixDaoConfig(useHystrix=true,timeout=3000)
 	public String  getTestString() {
+		
+		
+
 		
 		System.out.println("HystrixTestDao-getTestString-start,time="+System.currentTimeMillis());
 		
@@ -29,5 +39,8 @@ public class HystrixTestDao {
 
 		return "TestString";
 	}
+	
+	
+	
 	
 }

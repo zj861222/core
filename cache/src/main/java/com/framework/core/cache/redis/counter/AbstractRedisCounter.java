@@ -5,7 +5,6 @@ import com.framework.core.cache.redis.RedisValueOperations;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Component;
 
@@ -21,7 +20,8 @@ public abstract class AbstractRedisCounter {
     @Resource(name="gracefulRedisTemplate")
     GracefulRedisTemplate<String,String> gracefulRedisTemplate ;
 
-    @Autowired
+    
+    @Resource(name="redisValueOperations")
     RedisValueOperations<String,String> redisValueOperations ;
 
     //创建单个线程

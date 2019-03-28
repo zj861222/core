@@ -12,18 +12,31 @@
         <constructor-arg name="diskExpiryThreadIntervalSeconds" value="${ehcache.session.diskExpiryThreadIntervalSeconds:120}"/>    
     </bean>
     
-    
-    <bean id="sessionHolder" class="com.framework.core.web.session.SessionHolder" p:tokenEhcacheMgr-ref="tokenEhcacheMgr"
-       p:jedisClient-ref="jedisClient"  init-method="init"/>
-    
+    <bean id="sessionCacheHelper" class="com.framework.core.web.session.SessionCacheHelper" p:tokenEhcacheMgr-ref="tokenEhcacheMgr"
+       p:jedisClient-ref="jedisClient" p:redisHelper-ref="sessionRedisHelper"  init-method="init"/>
+
     
     <bean id="tokenManager" class="com.framework.core.web.session.token.TokenManager" p:enableStr="${core.token.enable:false}"
-       p:redisHelper-ref="redisHelper"  p:jwtBuilderUtils-ref="jwtBuilderUtils" init-method="init" />    
+     p:tokenRefreshProtectTime="${token.protectMins.tokenAfterRefresh:5}"
+     p:expireTokenProtectTime="${token.protectMins.expireToken:5}"     
+     p:refreshTokenProtectTime="${token.protectMins.refreshToken:5}"  
+       p:cookieDomainEnableStr="${core.token.enableCookieDomain:false}"  
+       p:jwtBuilderUtils-ref="jwtBuilderUtils" init-method="init" />    
     
     
     <bean id="baseTokenStrategy" class="com.framework.core.web.session.strategy.impl.BaseTokenStrategy" />       
     
     <bean id="tokenStrategyExecutor" class="com.framework.core.web.session.strategy.TokenStrategyExecutor" />       
     
+    
+    <bean id="tokenDebugHelper" class="com.framework.core.web.session.token.TokenDebugHelper"
+     p:tokenDebugEnable="${token.debug.enable:false}" p:debugTokenExpireMinute="${token.debug.tokenExpireMinutes:3}"
+     p:debugRefreshTokenExpireMinute="${token.debug.refreshTokenExpireMinutes:6}"
+     />       
+
+    <bean id="serviceAccessBizExtendHandler" class="com.framework.core.web.alarm.extend.ServiceAccessBizExtendHandler" />       
+
+
+
 
 </beans>

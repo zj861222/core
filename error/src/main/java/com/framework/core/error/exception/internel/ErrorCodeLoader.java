@@ -96,7 +96,7 @@ public class ErrorCodeLoader implements InitializingBean{
      */
     public static String getErrorMessageByCode(int errorCode)  {
     	
-    	String message = loader.errorCodeMap.get(errorCode);
+    	String message = loader.errorCodeMap.get(String.valueOf(errorCode));
 //    
     	return message;
     }

@@ -1,0 +1,106 @@
+<?xml  version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context" xmlns:task="http://www.springframework.org/schema/task" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:mvc="http://www.springframework.org/schema/mvc" 
+	xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context.xsd
+                        http://www.springframework.org/schema/util
+                        http://www.springframework.org/schema/util/spring-util.xsd
+                        http://www.springframework.org/schema/aop
+                        http://www.springframework.org/schema/aop/spring-aop.xsd
+                        http://www.springframework.org/schema/mvc
+                        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+                        http://www.springframework.org/schema/tx
+                        http://www.springframework.org/schema/tx/spring-tx.xsd                        
+                        http://www.springframework.org/schema/task
+                        http://www.springframework.org/schema/task/spring-task.xsd">
+      
+
+	<!-- Scans for application @Components to deploy -->
+	<context:component-scan base-package="com.framework.core.task" /> 
+
+	<!-- 数据库配置文件位置 -->
+	<!--  防止干扰业务的配置，不能使用这个
+	<context:property-placeholder location="classpath*:jdbc.properties,classpath*:core.config.properties" />
+     -->
+
+
+	<bean id="jobDataSource" class="com.framework.core.task.internel.dbsupport.JobDataSource" >
+	</bean>
+
+	
+	<bean id="jobSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="jobDataSource" />
+		<property name="configLocation" value="classpath:META-INF/mybatis/job_sqlMapConfig.xml"></property>		
+		<property name="mapperLocations">
+			<list>
+				<value>
+					classpath:META-INF/mybatis/sqlmap/jobcenter/task_exec_result_SqlMap.xml
+				</value>
+				<value>
+					classpath:META-INF/mybatis/sqlmap/jobcenter/task_schedule_SqlMap.xml
+				</value>				
+			</list>		
+		</property>			
+	</bean>
+
+
+	<!-- 配置SQLSession模板 -->
+	<bean id="jobSqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="jobSqlSessionFactory" />
+	</bean>
+
+    <!-- 
+	<bean id="jobBaseDao" abstract="true"
+		class="com.framework.core.task.internel.dao.BaseDao"
+		>
+		<property name="sqlSessionTemplate">
+			<ref bean="jobSqlSession" />
+		</property>
+	</bean>
+     -->
+
+	<bean id="tenantIdFetcher"  class="com.framework.core.task.internel.template.inner.TenantIdFetcher"/>
+	
+	<bean id="taskScheduleDAO"  class="com.framework.core.task.internel.dao.impl.TaskScheduleDAOImpl"/>
+
+   	<bean id="taskExecResultDAO"  class="com.framework.core.task.internel.dao.impl.TaskExecResultDAOImpl"/>
+   
+
+    <!-- 
+	<bean id="baseTenantTemplate" abstract="true"
+		class="com.framework.core.task.internel.template.BaseTenantTemplate"
+		>
+		<property name="redisSimpleLock">
+			<ref bean="redisSimpleLock" />
+		</property>
+		<property name="redisHelper">
+			<ref bean="redisHelper" />
+		</property>
+
+		<property name="taskScheduleDAO">
+			<ref bean="taskScheduleDAO" />
+		</property>
+		
+		<property name="taskExecResultDAO">
+			<ref bean="taskExecResultDAO" />
+		</property>		
+		
+		<property name="tenantIdFetcher">
+			<ref bean="tenantIdFetcher" />
+		</property>			
+	</bean>
+
+	<bean id="multiTenantJobTemplate" abstract="true"
+		class="com.framework.core.task.internel.template.MultiTenantJobTemplate"
+		parent="baseTenantTemplate"
+		/>
+ -->
+
+</beans>

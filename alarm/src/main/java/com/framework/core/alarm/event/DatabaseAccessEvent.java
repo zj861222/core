@@ -1,5 +1,7 @@
 package com.framework.core.alarm.event;
 
+import com.framework.core.alarm.EventTypeEnum;
+
 /**
  *  数据库操作的事件
  * Created by zhangjun
@@ -27,7 +29,7 @@ public class DatabaseAccessEvent extends  CommonEvent {
     /**
      * Create a new ApplicationEvent.
      *
-     * @param name : dao name : 例如： com.yoho.IProductDAO
+     * @param name : dao name : 例如： com.framework.XXDao
      * @param  statement: 接口名称，例如 getAll
      * @param  throwable: 数据库操作的异常， 可能为null
      * @param cost: 数据库操作的延迟
@@ -83,4 +85,10 @@ public class DatabaseAccessEvent extends  CommonEvent {
     public void setSrcServiceName(String srcServiceName) {
         this.srcServiceName = srcServiceName;
     }
+
+
+	@Override
+	public EventTypeEnum getEventType() {
+		return EventTypeEnum.EVENT_TYPE_DB_ACCESS;
+	}
 }

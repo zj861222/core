@@ -1,0 +1,15 @@
+com/framework/core/kafka/KafkaMessage.class
+com/framework/core/kafka/AbstractKafkaConsumerExecutor.class
+com/framework/core/kafka/AbstractKafkaConsumerExecutor$1.class
+com/framework/core/kafka/factory/internal/KafkaConsumerRebalanceListener.class
+com/framework/core/kafka/constants/KafkaFailedMessagePolicy.class
+com/framework/core/kafka/exception/KafkaException.class
+com/framework/core/kafka/KafkaMessageSender.class
+com/framework/core/kafka/factory/KafkaConsumerFactory.class
+com/framework/core/kafka/factory/internal/CustomizeKafkaOffset.class
+com/framework/core/kafka/factory/internal/AbstractConsumerPropertiesBuilder.class
+com/framework/core/kafka/factory/internal/KafkaConsumerManager.class
+com/framework/core/kafka/factory/internal/AbstractProducerPropertiesBuilder.class
+com/framework/core/kafka/factory/KafkaProducerFactory.class
+com/framework/core/kafka/factory/internal/KafkaExecutorRunnable.class
+com/framework/core/kafka/exception/KafkaErrorCode.class

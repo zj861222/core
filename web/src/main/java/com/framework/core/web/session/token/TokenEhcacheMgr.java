@@ -2,11 +2,7 @@ package com.framework.core.web.session.token;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.config.CacheConfiguration;
-import net.sf.ehcache.config.Configuration;
-import net.sf.ehcache.config.DiskStoreConfiguration;
 
-import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
 public class TokenEhcacheMgr {
 

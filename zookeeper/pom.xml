@@ -5,20 +5,20 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.framework.core</groupId>
-		<artifactId>core</artifactId>
-		<version>0.0.3</version>
+		<artifactId>framework-core</artifactId>
+        <version>0.0.56</version>
 	</parent>
 
     <groupId>com.framework.core</groupId>
-    <artifactId>core-zookeeper</artifactId>
-    <name>core-zookeeper</name>
+    <artifactId>framework-core-zookeeper</artifactId>
+    <name>framework-core-zookeeper</name>
     <url>http://maven.apache.org</url>
 
     <dependencies>
 
         <dependency>
                 <groupId>com.framework.core</groupId>
-                <artifactId>core-common</artifactId>
+                <artifactId>framework-core-common</artifactId>
         </dependency>
 
 
@@ -26,12 +26,12 @@
 	    <dependency>
 		        <groupId>javax.servlet</groupId>
 		        <artifactId>javax.servlet-api</artifactId>
+		        <scope>provided</scope>
 	    </dependency>
 
 
-
         <dependency>
-            <groupId>org.apache</groupId>
+            <groupId>org.apache.zookeeper</groupId>
             <artifactId>zookeeper</artifactId>
             <exclusions>
                 <exclusion>
@@ -64,11 +64,7 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
-
+ 
         <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>

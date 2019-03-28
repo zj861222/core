@@ -9,7 +9,7 @@
     
     <!--zookeeper factory-->
     <bean id="curatorFramework" class="com.framework.core.zookeeper.factory.ZookeeperClientFactory" p:customerZKListenerMgr-ref="customerZKListenerMgr"
-     p:connectString="${zkAddress:disable}" p:sessionTimeout="${zk.sessionTimeout:10000}"/>       
+     p:connectString="${zkAddress:disable}" p:sessionTimeout="${zk.sessionTimeout:20000}"/>       
 
 
     <bean id="zookeeperClientHelper" class="com.framework.core.zookeeper.util.ZookeeperClientHelper" p:curatorFramework-ref="curatorFramework"/>       

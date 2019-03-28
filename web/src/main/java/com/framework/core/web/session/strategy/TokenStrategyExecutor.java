@@ -17,8 +17,13 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.CollectionUtils;
 
+import com.alibaba.fastjson.JSON;
+import com.framework.core.alarm.EventPublisherUtils;
+import com.framework.core.alarm.event.SessionExceptionEvent;
 import com.framework.core.error.exception.BizException;
 import com.framework.core.error.exception.code.impl.BaseCode;
+import com.framework.core.web.exception.TokenErrorCode;
+import com.framework.core.web.session.filter.SessionFilter;
 import com.framework.core.web.session.token.TokenManager;
 
 import io.jsonwebtoken.Claims;
@@ -54,9 +59,8 @@ public class TokenStrategyExecutor implements ApplicationContextAware {
 	 * @param request
 	 * @param reponse
 	 * @return
-	 * @throws BizException
 	 */
-	public void tokenValidate(HttpServletRequest request, HttpServletResponse reponse) throws BizException {
+	public void tokenValidate(HttpServletRequest request, HttpServletResponse reponse)  {
 
 		// 获取token，
 		String token = TokenManager.fetchTokenFromRequest(request);
@@ -65,16 +69,23 @@ public class TokenStrategyExecutor implements ApplicationContextAware {
 			return;
 		}
 
+		SessionFilter.setCurrentToken(token);
+		
 		try {
 
 			doValidateChain(token, request, reponse);
 
 		} catch (BizException e) {
 
+			reportEvent(SessionExceptionEvent.TYPE_REFRESH_TOKEN_AUTH_FAILED, "TokenStrategyExecutor=>[tokenValidate]:bizException", "[token]="+token, e);
+
 			throw e;
 
 		} catch (Exception e) {
 
+			
+			reportEvent(SessionExceptionEvent.TYPE_REFRESH_TOKEN_AUTH_FAILED, "TokenStrategyExecutor=>[tokenValidate]:exception", "[token]="+token, e);
+			
 			logger.error(
 					"TokenStrategyExecutor execute token validate unexpected failed!! message is :" + e.getMessage(),
 					e);
@@ -90,10 +101,9 @@ public class TokenStrategyExecutor implements ApplicationContextAware {
 	 * @param request
 	 * @param reponse
 	 * @return
-	 * @throws BizException
 	 */
 	private void doValidateChain(String token, HttpServletRequest request, HttpServletResponse reponse)
-			throws BizException {
+			 {
 
 		if (CollectionUtils.isEmpty(strategyList)) {
 			return;
@@ -112,4 +122,27 @@ public class TokenStrategyExecutor implements ApplicationContextAware {
 
 	}
 
+	
+
+	/**
+	 * 上报事件
+	 * 
+	 * @param methodInfo
+	 * @param args
+	 * @param e
+	 */
+	private static void reportEvent(int type, String methodInfo, String param, Exception e) {
+
+		int errorcode = BaseCode.EX_SYSTEM_UNKNOW.getCode();
+		
+		if(e instanceof BizException) {
+			errorcode = ((BizException) e).getErrorCode();
+		}
+		
+		SessionExceptionEvent event = new SessionExceptionEvent(type, SessionFilter.getRequest().getRequestURI(),
+				methodInfo, param, errorcode,e);
+		EventPublisherUtils.reportEvent(event);
+	}
+
+	
 }

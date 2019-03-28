@@ -9,6 +9,18 @@ public enum DalErrorCode implements ErrorCode {
    //influx db error
   EX_SYS_INFLUX_MAPPING_FAILED (100001002),    
 
+  //非法主库信息
+  EX_SYSTEM_DB_FALTE_EX_MASTER_DB_INFO_IDEGGLE (100001003),   
+  
+  //没有实现dataSourceInfoFetcher
+  EX_SYSTEM_DB_FALTE_EX_DB_INFO_FATCHER_NOT_IMPLEMENT (100001004),    
+  //摧毁数据源失败
+  EX_SYSTEM_DB_FALTE_EX_DESTORY_DATASOURCE_FAILED (100001005),    
+  //摧毁连接
+  EX_SYSTEM_DB_FALTE_EX_DESTORY_CONN_FAILED (100001006),    
+
+
+
 
 	;
 

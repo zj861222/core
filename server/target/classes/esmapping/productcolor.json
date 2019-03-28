@@ -1,0 +1,27 @@
+{
+    "productcolor": {
+        "_all": {
+            "enabled": false
+        },
+        "_source": {
+            "enabled": true
+        },
+        "_id": {
+            "path": "id"
+        },
+        "properties": {
+            "id": {
+                "type": "long"
+            },
+            "colorName": {
+                "type": "string"
+            },
+            "colorCode": {
+                "type": "string"
+            },
+            "colorValue": {
+                "type": "string"
+            }
+        }
+    }
+}

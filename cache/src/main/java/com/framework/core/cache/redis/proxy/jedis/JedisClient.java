@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import com.framework.core.error.exception.BizException;
+
 /**
  * 
  * @author zhangjun
@@ -18,7 +20,7 @@ public interface JedisClient {
 	 * @param hashKey
 	 * @param value
 	 */
-	public void hashSet(String key, String hashKey, Object value);
+	public void hashSet(String key, String hashKey, Object value) ;
 	
     /**
      * hash get
@@ -26,20 +28,20 @@ public interface JedisClient {
      * @param hashKey
      * @return
      */
-	public Object hashGet(String key, String hashKey);
+	public Object hashGet(String key, String hashKey) ;
 	
 	/**
 	 * hash删除 
 	 * @param key
 	 * @param hashKey
 	 */
-	public void hDelete(String key, String hashKey);
+	public void hDelete(String key, String hashKey) ;
 	
 	/**
 	 * 删除
 	 * @param key
 	 */
-	public void delete(String key);
+	public void delete(String key) ;
 	
 	/**
 	 * 超时
@@ -55,14 +57,14 @@ public interface JedisClient {
 	 * @param key
 	 * @return
 	 */
-	public Map<String,Object> entries(String key);
+	public Map<String,Object> entries(String key) ;
 	
 	
 	/**
 	 * 批量删除
 	 * @param keys
 	 */
-	public void delete(final Collection<String> keys);
+	public void delete(final Collection<String> keys) ;
 
 
 }

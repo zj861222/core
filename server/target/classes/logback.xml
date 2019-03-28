@@ -1,132 +1,103 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration scan="true">
-	<jmxConfigurator />
-    <timestamp key="byDay" datePattern="yyyyMMdd"/>
-    
+<configuration scan="true" scanPeriod="1 minutes" debug="false">
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <Target>System.out</Target>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%-5level] [%logger.%M:%L] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="rolling"
+              class="ch.qos.logback.core.FileAppender">
+        <file>/Users/zhangjun/Documents/apache-tomcat-7.0.62/logs/app.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%-5level] [%logger.%M:%L] |%msg%n</pattern>
+        </encoder>
+        <charset>UTF-8</charset>
+    </appender>
+
+    <appender name="async_rolling" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>512</queueSize>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref="rolling"/>
+    </appender>
+
+    <root level="info">
+        <!-- <appender-ref ref="stdout" /> -->
+        <appender-ref ref="async_rolling"/>
+    </root>
+
+
 	
-    <!-- Output to Console -->
-    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
-	    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">            
-        	<level>WARN</level>
-            <onMatch>NEUTRAL</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
-        <!-- 字符过滤 
-            1.过滤struts标签中资源无映射文件的警告
-            2.过滤struts标签中上传文件标签提示信息警告
-            3.去掉Action配置不存在警告
-        -->
-	    <filter class="ch.qos.logback.core.filter.EvaluatorFilter">         
-          <evaluator>
-            <expression>
-            (level == WARN &amp;&amp; (
-                  message.contains("The first TextProvider in the ValueStack")
-                  || message.contains("The default value expression")
-                  || message.contains("Struts has detected a file upload UI tag")
-                  || message.contains("No configuration found for the specified action")
-                  || message.contains("attribute is deprecated. Use the")
-                  || message.contains("Could not find token name in params")
-                  || message.contains("registered a statement as closed which")
-                  || message.contains("Unable to parse request")
-                  || message.contains("not found for MessageSource")
-                ))
-            </expression>
-          </evaluator>
-          <OnMatch>DENY</OnMatch>
-          <OnMismatch>ACCEPT</OnMismatch>  
-        </filter>
-
-        <layout class="com.fh.iasp.platform.core.log.ExtendPatternLayout">
-            <pattern>%date{yyyy-MM-dd HH:mm:ss} [%thread] [%-5level] [%ext] %logger{0}:%L - %msg %n %ex{short}</pattern>
-        </layout>
-    </appender>
-
-    <!-- Output to File -->
-    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">  
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">            
-        	<level>INFO</level>
-        </filter>
-	    <filter class="ch.qos.logback.core.filter.EvaluatorFilter">         
-          <evaluator>
-            <expression>
-            (level == WARN &amp;&amp; (
-                  message.contains("The first TextProvider in the ValueStack")
-                  || message.contains("The default value expression")
-                  || message.contains("Struts has detected a file upload UI tag")
-                  || message.contains("No configuration found for the specified action")
-                  || message.contains("attribute is deprecated. Use the")
-                  || message.contains("Could not find token name in params")
-                  || message.contains("registered a statement as closed which")
-                  || message.contains("Unable to parse request")
-                  || message.contains("not found for MessageSource")
-                ))
-            </expression>
-          </evaluator>
-          <OnMatch>DENY</OnMatch>
-          <OnMismatch>ACCEPT</OnMismatch>  
-        </filter>        
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">  
-            <FileNamePattern>${catalina.base}/logs/info-%d{yyyy-MM-dd}.log</FileNamePattern>  
-            <MaxHistory>5</MaxHistory>
-        </rollingPolicy>  
-        <layout class="com.fh.iasp.platform.core.log.ExtendPatternLayout">
-            <pattern>%date{yyyy-MM-dd HH:mm:ss} [%thread] [%-5level] [%ext] %msg%n %ex{short}</pattern>
-        </layout>
-    </appender>
-
-	<appender name="DEBUG" class="ch.qos.logback.core.rolling.RollingFileAppender">  
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">            
-        	<level>DEBUG</level>			
-			<onMatch>ACCEPT</onMatch>
-			<onMismatch>DENY</onMismatch>
-        </filter>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">  
-            <FileNamePattern>${catalina.base}/logs/debug-%d{yyyy-MM-dd}.%i.log</FileNamePattern>  
-            <MaxHistory>3</MaxHistory>
-            <timeBasedFileNamingAndTriggeringPolicy  
-	            class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">  
-	           <!-- or whenever the file size reaches 100MB -->  
-	           <maxFileSize>100MB</maxFileSize>  
-            </timeBasedFileNamingAndTriggeringPolicy> 
-        </rollingPolicy>  
-        
-		<encoder>
-			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>
+	<!--aop用户请求日志 -->
+	<appender name="USERREQUEST"
+		class="ch.qos.logback.core.FileAppender">
+		<file>/Users/zhangjun/Documents/apache-tomcat-7.0.62/logs/pay_app_user_request.log</file>
+		<append>true</append>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>%d{yyyy-MM-dd HH:mm:ss} [%-5level] [%logger.%M:%L] |%msg%n
+			</pattern>
+			<charset>utf-8</charset>
 		</encoder>
-    </appender>
+	</appender>
+	
+	
+	
+	<appender name="AccountRollbackFailLogger"
+		class="ch.qos.logback.core.FileAppender">
+		<file>/Users/zhangjun/Documents/apache-tomcat-7.0.62/logs/pay_account_rollback_fail.log</file>
+		<append>true</append>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>%d{yyyy-MM-dd HH:mm:ss} [%-5level] [%logger.%M:%L] |%msg%n
+			</pattern>
+			<charset>utf-8</charset>
+		</encoder>
+	</appender>
 
- 
-    <!-- sql print
-	<logger name="com.ibatis" level="DEBUG" />
-	<logger name="com.ibatis.common.jdbc.SimpleDataSource" level="DEBUG" />
-	<logger name="com.ibatis.common.jdbc.ScriptRunner" level="DEBUG" />
-	<logger name="com.ibatis.sqlmap.engine.impl.SqlMapClientDelegate" level="DEBUG" />
-	<logger name="java.sql.Connection" level="DEBUG" />
-	<logger name="java.sql.Statement" level="DEBUG" />
-	<logger name="java.sql.PreparedStatement" level="DEBUG" />
-	<logger name="java.sql.ResultSet" level="DEBUG"  />
-	
-	<logger name="org.springframework.jdbc.datasource.DataSourceTransactionManager" level="DEBUG"  />
-	<logger name="org.springframework.data.mongodb.core.MongoTemplate" level="DEBUG"  />
-	<logger name="org.springframework.data.mongodb.core.query.Query" level="DEBUG"  />
-	<logger name="org.springframework.data.mongodb.core.query.Update" level="DEBUG"  />
-     -->
-	<logger name="com.fh" level="DEBUG">
-	    <appender-ref ref="DEBUG"/>
-	</logger>
-	
-	<logger name="com.fiberhome" level="DEBUG">
-	    <appender-ref ref="DEBUG"/>
+	<logger name="com.qianwang.pay.account.logger.AccountRollbackFailLogger" additivity="false"
+		level="info">
+		<appender-ref ref="AccountRollbackFailLogger" />
 	</logger>		
 
-    <root level="INFO">
-        <appender-ref ref="Console"/>
-        <appender-ref ref="FILE"/>
-        <!-- <appender-ref ref="KAFKA"/>-->
-        <!-- <appender-ref ref="SOCKET"/>-->
-    </root>
-    
 
+	<appender name="TASK_LOG"
+		class="ch.qos.logback.core.FileAppender">
+		<file>/Users/zhangjun/Documents/apache-tomcat-7.0.62/logs/job.log</file>
+		<append>true</append>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>%d{yyyy-MM-dd HH:mm:ss} [%-5level] [%logger.%M:%L] |%msg%n
+			</pattern>
+			<charset>utf-8</charset>
+		</encoder>
+	</appender>
+	
+	<logger name="com.framework.core.task" level="DEBUG" additivity="false" >
+	    <appender-ref ref="TASK_LOG"/>
+	</logger>     
+     	
+	
+	
+	<!--
+    <logger name="org.springframework.amqp" level="DEBUG"/>	
     
-    
+    -->
+    <logger name="org.apache.zookeeper" level="INFO"/>
+	
+
+    <logger name="com.hyip" level="INFO"/>
+    <logger name="com.ibatis" level="ERROR"/>
+    <logger name="org.springframework" level="ERROR"/>
+    <logger name="com.ibatis.sqlmap.engine.impl.SqlMapClientDelegate" level="ERROR"/>
+    <logger name="org.apache.commons" level="ERROR"/>
+    <logger name="catalia" level="ERROR"/>
+    <logger name="org.apache" level="ERROR"/>
+    <logger name="com.ibatis.common.jdbc.SimpleDataSource" level="ERROR"/>
+    <logger name="java.sql.ResultSet" level="ERROR"/>
+    <logger name="com.ibatis.common.jdbc.ScriptRunner" level="ERROR"/>
+    <logger name="java.sql.Connection" level="ERROR"/>
+    <logger name="java.sql.PreparedStatement" level="ERROR"/>
+
 </configuration>

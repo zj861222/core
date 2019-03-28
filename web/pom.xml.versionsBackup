@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.framework.core</groupId>
+		<artifactId>waiqin365-core</artifactId>
+        <version>0.0.8</version>
+	</parent>
+
+    <groupId>com.framework.core</groupId>
+    <artifactId>waiqin365-core-web</artifactId>
+    <name>waiqin365-core-web</name>
+    <url>http://maven.apache.org</url>
+
+    <dependencies>
+
+        <dependency>
+                <groupId>com.framework.core</groupId>
+                <artifactId>waiqin365-core-cache</artifactId>
+        </dependency>
+
+        <dependency>
+                <groupId>com.framework.core</groupId>
+                <artifactId>waiqin365-core-dal</artifactId>
+        </dependency>
+
+        <dependency>
+                <groupId>com.framework.core</groupId>
+                <artifactId>waiqin365-core-alarm</artifactId>
+        </dependency>
+
+   
+        <dependency>
+                <groupId>com.framework.core</groupId>
+                <artifactId>waiqin365-core-zookeeper</artifactId>
+        </dependency>
+
+
+
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-framework</artifactId>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-recipes</artifactId>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-client</artifactId>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-x-discovery</artifactId>
+            </dependency>
+
+
+
+
+            <dependency>
+                <groupId>com.netflix.hystrix</groupId>
+                <artifactId>hystrix-core</artifactId>
+            </dependency>
+
+            <dependency>
+                <groupId>com.netflix.hystrix</groupId>
+                <artifactId>hystrix-metrics-event-stream</artifactId>
+				<exclusions>
+				<exclusion>
+					<artifactId>jackson-databind</artifactId>
+					 <groupId>com.fasterxml.jackson.core</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jackson-annotations</artifactId>
+					<groupId>com.fasterxml.jackson.core</groupId>
+				</exclusion>
+			</exclusions>
+            </dependency>
+
+
+
+
+
+    </dependencies>
+</project>

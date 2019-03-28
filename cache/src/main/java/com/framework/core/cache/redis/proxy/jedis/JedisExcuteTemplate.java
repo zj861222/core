@@ -4,8 +4,10 @@ package com.framework.core.cache.redis.proxy.jedis;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 
-import redis.clients.jedis.ShardedJedis;
-import redis.clients.jedis.ShardedJedisPool;
+import com.framework.core.cache.redis.exception.RedisErrorCode;
+import com.framework.core.error.exception.BizException;
+
+
 
 /**
  * 
@@ -19,8 +21,6 @@ public class JedisExcuteTemplate {
      */
 	private RedisConnectionFactory connectionFactory;
 	
-	
-
 
 	public RedisConnectionFactory getConnectionFactory() {
 		return connectionFactory;
@@ -40,14 +40,15 @@ public class JedisExcuteTemplate {
 	public RedisConnection getConnection() {
 		
         try {
-
+        	
         	RedisConnection conenction = connectionFactory.getConnection();
 
             return conenction;
+            
         } catch (Exception e) {
         	e.printStackTrace();
+        	throw new BizException(RedisErrorCode.EX_SYS_REDIS_GET_CONNECTION_FAIL.getCode(), e);
         }
-        return null;
 		
 	}
 	
@@ -79,13 +80,11 @@ public class JedisExcuteTemplate {
             return executeCallback.command(connection);
         } catch (Exception e) {
         	e.printStackTrace();
-    
+        	throw new BizException(RedisErrorCode.EX_SYS_REDIS_CMD_EXE_FAIL.getCode(), e);
         } finally {
             // 释放资源
         	closeconnection(connection);
-//        	returnResource(shardedJedis);
         }
-        return null;
     }
 
     /**
@@ -96,7 +95,7 @@ public class JedisExcuteTemplate {
      */
     public interface Callback {
 
-        public Object command(RedisConnection connection);
+        public Object command(RedisConnection connection) ;
 //        public Object command(ShardedJedis shardedJedis);
 
     }

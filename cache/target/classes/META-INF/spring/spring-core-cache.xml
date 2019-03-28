@@ -1,107 +1,204 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:p="http://www.springframework.org/schema/p"
-       xmlns="http://www.springframework.org/schema/beans"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	xmlns:p="http://www.springframework.org/schema/p" xmlns="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <!-- redis template definition -->
-    <bean id="stringRedisSerializer"
-            class="org.springframework.data.redis.serializer.StringRedisSerializer"/>
-            
-        
- 
-          
-   <bean id="jdkSerializationRedisSerializer"
-            class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer"/>          
-          
-          
-            
-    <!-- pool config -->
-    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
-        <property name="maxTotal" value="${redis.pool.maxTotal:50}" />
-        <property name="maxIdle" value="${redis.pool.maxIdle:20}" />
-        <property name="minIdle" value="${redis.pool.minIdle:20}"/>
-        <property name="maxWaitMillis" value="${redis.pool.maxWaitMillis:2000}" />
-        <property name="testOnBorrow" value="${redis.pool.testOnBorrow:false}" />
-        <property name="testWhileIdle" value="${redis.pool.testWhileIdle:false}"/>
-    </bean>
+	<!-- redis template definition -->
+	<bean id="stringRedisSerializer"
+		class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+
+
+	<bean id="jdkSerializationRedisSerializer"
+		class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer" />
+
+
+	<!-- pool config -->
+	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxTotal" value="${redis.pool.maxTotal:50}" />
+		<property name="maxIdle" value="${redis.pool.maxIdle:20}" />
+		<property name="minIdle" value="${redis.pool.minIdle:20}" />
+		<property name="maxWaitMillis" value="${redis.pool.maxWaitMillis:2000}" />
+		<property name="testOnBorrow" value="${redis.pool.testOnBorrow:false}" />
+		<property name="testWhileIdle" value="${redis.pool.testWhileIdle:false}" />
+	</bean>
 
 
 
-    <bean id="shardedJedisPool" class="redis.clients.jedis.ShardedJedisPool">  
-        <constructor-arg index="0" ref="jedisPoolConfig" />  
-        <constructor-arg index="1">  
-            <list>  
-                <bean class="redis.clients.jedis.JedisShardInfo">  
-                    <constructor-arg name="host" value="127.0.0.1" />  
-                    <constructor-arg name="port" value="6379" />  
-                    <constructor-arg name="timeout" value="2000" />  
-                    <property name="password" value="${redis.notsync.twemproxy.auth:''}"/>
-                    
-                </bean>  
-            </list>  
-        </constructor-arg>  
-    </bean>
+	<bean id="shardedJedisPool" class="redis.clients.jedis.ShardedJedisPool">
+		<constructor-arg index="0" ref="jedisPoolConfig" />
+		<constructor-arg index="1">
+			<list>
+				<bean class="redis.clients.jedis.JedisShardInfo">
+					<constructor-arg name="host" value="127.0.0.1" />
+					<constructor-arg name="port" value="6379" />
+					<constructor-arg name="timeout" value="2000" />
+					<property name="password" value="${redis.notsync.twemproxy.auth:''}" />
+
+				</bean>
+			</list>
+		</constructor-arg>
+	</bean>
 
 
 
 
-    <!--读写，不主从同步-->     
-    <bean id="multJedisConnectionFactory" class="com.framework.core.cache.redis.proxy.MultJedisConnectionFactory"
-          p:timeout="200"
-          p:poolConfig-ref="jedisPoolConfig"
-          p:tweproxyAddrs="${redis.notsync.twemproxy.addresses:127.0.0.1:6379}"
-          p:password="${redis.notsync.twemproxy.auth:''}"
-          p:dbIndex="${redis.notsync.twemproxy.database:0}" />   
+	<!--session 用 redis -->
+	<bean id="sessionMultJedisConnectionFactory"
+		class="com.framework.core.cache.redis.proxy.MultJedisConnectionFactory"
+		p:timeout="200" p:poolConfig-ref="jedisPoolConfig"
+		p:tweproxyAddrs="${redis.notsync.twemproxy.addresses:127.0.0.1:6379}"
+		p:password="${redis.notsync.twemproxy.auth:null}" p:dbIndex="${redis.notsync.twemproxy.database:0}" />
 
-    <bean id="gracefulRedisTemplate"
-          class="com.framework.core.cache.redis.GracefulRedisTemplate"   primary="true"
-          p:connectionFactory-ref="multJedisConnectionFactory"
-          p:keySerializer-ref="stringRedisSerializer"
-          p:valueSerializer-ref="stringRedisSerializer"
-          p:hashKeySerializer-ref="stringRedisSerializer"
-          
-          />
-          
-
-    <bean id="redisValueOperations" class="com.framework.core.cache.redis.RedisValueOperations" 
-       p:valueOperations-ref="gracefulRedisTemplate" p:valueOperationsReadOnly-ref="gracefulRedisTemplate" />
-  
-    
-    <bean id="redisSetOperations" class="com.framework.core.cache.redis.RedisSetOperations" 
-       p:setOperations-ref="gracefulRedisTemplate" p:setOperationsReadOnly-ref="gracefulRedisTemplate" />
-
-    
-    <bean id="redisZSetOperations" class="com.framework.core.cache.redis.RedisZSetOperations"  
-       p:zsetOperations-ref="gracefulRedisTemplate" p:zsetOperationsReadOnly-ref="gracefulRedisTemplate" />
-    
-    
-    <bean id="redisListOperations" class="com.framework.core.cache.redis.RedisListOperations" 
-       p:listOperations-ref="gracefulRedisTemplate" p:listOperationsReadOnly-ref="gracefulRedisTemplate" />
-
-    <bean id="redisHashOperations" class="com.framework.core.cache.redis.RedisHashOperations" 
-       p:hashOperations-ref="gracefulRedisTemplate" p:hashOperationsReadOnly-ref="gracefulRedisTemplate" />
+	<bean id="sessionGracefulRedisTemplate" class="com.framework.core.cache.redis.GracefulRedisTemplate"
+		p:connectionFactory-ref="sessionMultJedisConnectionFactory"
+		p:keySerializer-ref="stringRedisSerializer" p:valueSerializer-ref="stringRedisSerializer"
+		p:hashKeySerializer-ref="stringRedisSerializer" />
 
 
-       <!--jedis 存放 对象，不用string 序列化，用默认的jdk序列化-->
-        <bean id="jedisExcuteTemplate" class="com.framework.core.cache.redis.proxy.jedis.JedisExcuteTemplate"
-    p:connectionFactory-ref="multJedisConnectionFactory"/>
-
-       <bean id="jedisClient" class="com.framework.core.cache.redis.proxy.jedis.impl.JedisClientImpl"
-         p:jedisExcuteTemplate-ref="jedisExcuteTemplate"/> 
+	<bean id="sessionRedisValueOperations" class="com.framework.core.cache.redis.RedisValueOperations"
+		p:valueOperations-ref="sessionGracefulRedisTemplate"
+		p:valueOperationsReadOnly-ref="sessionGracefulRedisTemplate" />
 
 
+	<bean id="sessionRedisSetOperations" class="com.framework.core.cache.redis.RedisSetOperations"
+		p:setOperations-ref="sessionGracefulRedisTemplate"
+		p:setOperationsReadOnly-ref="sessionGracefulRedisTemplate" />
 
-    <bean id="redisHelper" class="com.framework.core.cache.redis.utils.RedisHelper" >
-          <!--  -->
-          <property name="gracefulRedisTemplate" ref="gracefulRedisTemplate" />
-          <property name="redisValueOperations" ref="redisValueOperations" />
-          <property name="redisHashOperations" ref="redisHashOperations" />
-          
-    </bean>    
-    
-    
 
-    
+	<bean id="sessionRedisZSetOperations" class="com.framework.core.cache.redis.RedisZSetOperations"
+		p:zsetOperations-ref="sessionGracefulRedisTemplate"
+		p:zsetOperationsReadOnly-ref="sessionGracefulRedisTemplate" />
+
+
+	<bean id="sessionRedisListOperations" class="com.framework.core.cache.redis.RedisListOperations"
+		p:listOperations-ref="sessionGracefulRedisTemplate"
+		p:listOperationsReadOnly-ref="sessionGracefulRedisTemplate" />
+
+	<bean id="sessionRedisHashOperations" class="com.framework.core.cache.redis.RedisHashOperations"
+		p:hashOperations-ref="sessionGracefulRedisTemplate"
+		p:hashOperationsReadOnly-ref="sessionGracefulRedisTemplate" />
+
+
+	<!--jedis 存放 对象，不用string 序列化，用默认的jdk序列化 -->
+	<bean id="jedisExcuteTemplate"
+		class="com.framework.core.cache.redis.proxy.jedis.JedisExcuteTemplate"
+		p:connectionFactory-ref="sessionMultJedisConnectionFactory" />
+
+	<bean id="jedisClient"
+		class="com.framework.core.cache.redis.proxy.jedis.impl.JedisClientImpl"
+		p:jedisExcuteTemplate-ref="jedisExcuteTemplate" />
+
+
+	<bean id="sessionRedisHelper" class="com.framework.core.cache.redis.utils.RedisHelper">
+		<!-- -->
+		<property name="gracefulRedisTemplate" ref="sessionGracefulRedisTemplate" />
+		<property name="redisValueOperations" ref="sessionRedisValueOperations" />
+		<property name="redisHashOperations" ref="sessionRedisHashOperations" />
+		<property name="redisListOperations" ref="sessionRedisListOperations" />
+		<property name="redisZSetOperations" ref="sessionRedisZSetOperations" />
+	</bean>
+
+
+
+	<bean id="redisSimpleLock" class="com.framework.core.cache.redis.lock.RedisSimpleLock">
+		<property name="gracefulRedisTemplate" ref="gracefulRedisTemplate" />
+		<property name="redisValueOperations" ref="redisValueOperations" />
+	</bean>
+
+
+	<bean id="redisComplexLock" class="com.framework.core.cache.redis.lock.RedisComplexLock">
+		<property name="jedisConnectionFactory" ref="dataCacheMultJedisConnectionFactory" />
+	</bean>
+
+
+	<!--业务用的数据缓存，写库 -->
+	<bean id="dataCacheMultJedisConnectionFactory"
+		class="com.framework.core.cache.redis.proxy.MultJedisConnectionFactory"
+		p:timeout="200" p:poolConfig-ref="jedisPoolConfig"
+		p:tweproxyAddrs="${redis.datacache.addresses:127.0.0.1:6379}"
+		p:password="${redis.datacache.auth:null}" p:dbIndex="${redis.datacache.database:0}" />
+
+	<!--业务用的数据模版，写库 -->
+	<bean id="gracefulRedisTemplate" class="com.framework.core.cache.redis.GracefulRedisTemplate"
+		primary="true" p:connectionFactory-ref="dataCacheMultJedisConnectionFactory"
+		p:keySerializer-ref="stringRedisSerializer" p:valueSerializer-ref="stringRedisSerializer"
+		p:hashKeySerializer-ref="stringRedisSerializer" />
+
+
+
+	<!--业务用的数据缓存只读库 -->
+	<bean id="dataCacheReadOnlyMultJedisConnectionFactory"
+		class="com.framework.core.cache.redis.proxy.MultJedisConnectionFactory"
+		p:timeout="200" p:poolConfig-ref="jedisPoolConfig"
+		p:tweproxyAddrs="${redis.slave.datacache.addresses:${redis.datacache.addresses}}"
+		p:password="${redis.slave.datacache.auth:null}" p:dbIndex="${redis.slave.datacache.database:0}" />
+
+
+
+    <!-- 只读的datacache template -->
+	<bean id="gracefulReadOnlyRedisTemplate" class="com.framework.core.cache.redis.GracefulRedisTemplate"
+		 p:connectionFactory-ref="dataCacheReadOnlyMultJedisConnectionFactory"
+		p:keySerializer-ref="stringRedisSerializer" p:valueSerializer-ref="stringRedisSerializer"
+		p:hashKeySerializer-ref="stringRedisSerializer" />
+
+
+
+	<bean id="redisValueOperations" class="com.framework.core.cache.redis.RedisValueOperations"
+		primary="true" p:valueOperations-ref="gracefulRedisTemplate"
+		p:valueOperationsReadOnly-ref="gracefulReadOnlyRedisTemplate" />
+
+
+	<bean id="redisSetOperations" class="com.framework.core.cache.redis.RedisSetOperations"
+		primary="true" p:setOperations-ref="gracefulRedisTemplate"
+		p:setOperationsReadOnly-ref="gracefulReadOnlyRedisTemplate" />
+
+
+	<bean id="redisZSetOperations" class="com.framework.core.cache.redis.RedisZSetOperations"
+		primary="true" p:zsetOperations-ref="gracefulRedisTemplate"
+		p:zsetOperationsReadOnly-ref="gracefulReadOnlyRedisTemplate" />
+
+
+	<bean id="redisListOperations" class="com.framework.core.cache.redis.RedisListOperations"
+		primary="true" p:listOperations-ref="gracefulRedisTemplate"
+		p:listOperationsReadOnly-ref="gracefulReadOnlyRedisTemplate" />
+
+	<bean id="redisHashOperations" class="com.framework.core.cache.redis.RedisHashOperations"
+		primary="true" p:hashOperations-ref="gracefulRedisTemplate"
+		p:hashOperationsReadOnly-ref="gracefulReadOnlyRedisTemplate" />
+
+
+	<bean id="redisHelper" class="com.framework.core.cache.redis.utils.RedisHelper"
+		primary="true">
+
+		<property name="gracefulRedisTemplate" ref="gracefulRedisTemplate" />
+		<property name="redisValueOperations" ref="redisValueOperations" />
+		<property name="redisHashOperations" ref="redisHashOperations" />
+		<property name="redisListOperations" ref="redisListOperations" />
+		<property name="redisZSetOperations" ref="redisZSetOperations" />
+	</bean>
+
+	<!-- -->
+	<bean id="heartbeatParmHelper"
+		class="com.framework.core.cache.redis.register.HeartbeatParmHelper">
+		<property name="context" value="${web.context:default}" />
+		<property name="redisHelper" ref="redisHelper" />
+	</bean>
+
+
+
+	<bean id="redisMessageListenerMgr"
+		class="com.framework.core.cache.redis.message.RedisMessageListenerMgr" >
+		<property name="webContext" value="${web.context:default}" />
+	</bean>
+	
+	
+	<!--redisMessageListenerContainer -->
+	<bean id="redisMessageListenerContainer"
+		class="com.framework.core.cache.redis.message.RedisMessageListenerContainerFactory"
+		p:maxSubscriptionRegistrationWaitingMillisSeconds="${redis.message.regis.waiting:2000}"
+		p:redisConnectionFactory-ref="dataCacheMultJedisConnectionFactory"
+		p:redisMessageListenerMgr-ref="redisMessageListenerMgr"
+		p:recoveryIntervalMillisSeconds="${redis.message.recovery.interval:5000}" />
+
 
 </beans>

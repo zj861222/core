@@ -1,0 +1,58 @@
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/rabbit
+           http://www.springframework.org/schema/rabbit/spring-rabbit.xsd
+           http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="simpleMessageConverter" class="org.springframework.amqp.support.converter.SimpleMessageConverter"/>
+
+    <rabbit:connection-factory id="rabbitmq-connectionFactory" addresses="${core.rabbit_host:127.0.0.1:5672}"
+                               username="${core.rabbit_user:rabbit}" password="${core.rabbit_password:rabbit}" virtual-host="${core.rabbit_vhost:rabbit}" />
+
+    <rabbit:template id="amqpTemplate" connection-factory="rabbitmq-connectionFactory"
+                     message-converter="simpleMessageConverter"/>
+
+	<!-- 基础模版类  -->
+	<bean id="baseProducerTemplate" abstract="true"
+		class="com.framework.core.message.rabbit.factory.internal.producer.BaseProducerTemplate">
+	        <property name="amqpTemplate" ref="amqpTemplate"/>
+	</bean>
+	
+    <!--topic 生产者模版 -->
+    <bean id="topicProducerTemplate" class="com.framework.core.message.rabbit.factory.internal.producer.TopicProducerTemplate" 
+    parent="baseProducerTemplate"/>
+
+    <!--fanout 生产者模版 -->
+    <bean id="FanoutProducerTemplate" class="com.framework.core.message.rabbit.factory.internal.producer.FanoutProducerTemplate" 
+    parent="baseProducerTemplate"/>
+
+
+
+
+    <rabbit:admin id="rabbitAdmin" connection-factory="rabbitmq-connectionFactory"/>
+
+    <!--topic 消费者factory -->
+    <bean id="topicMessageConsumerFactory" class="com.framework.core.message.rabbit.factory.internal.consumer.TopicMessageConsumerFactory">
+        <constructor-arg name="admin" ref="rabbitAdmin"/>
+        <constructor-arg name="connectionFactory" ref="rabbitmq-connectionFactory"/>
+        <constructor-arg name="context" value="${web.context:default}"/>
+        <constructor-arg name="simpleMessageConverter" ref="simpleMessageConverter"/>
+        <constructor-arg name ="enableRabbit" value="${core.rabbit.enable:true}"/>
+    </bean>
+
+
+    <!--fanout 消费者factory -->
+    <bean id="fanoutMessageConsumerFactory" class="com.framework.core.message.rabbit.factory.internal.consumer.FanoutMessageConsumerFactory">
+        <constructor-arg name="admin" ref="rabbitAdmin"/>
+        <constructor-arg name="connectionFactory" ref="rabbitmq-connectionFactory"/>
+        <constructor-arg name="context" value="${web.context:default}"/>
+        <constructor-arg name="simpleMessageConverter" ref="simpleMessageConverter"/>
+        <constructor-arg name ="enableRabbit" value="${core.rabbit.enable:true}"/>   
+    </bean>
+
+
+
+
+</beans>

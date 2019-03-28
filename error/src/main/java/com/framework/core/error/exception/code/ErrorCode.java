@@ -1,6 +1,5 @@
 package com.framework.core.error.exception.code;
 
-import com.framework.core.error.exception.BizException;
 
 /**
  *
@@ -12,7 +11,7 @@ public interface ErrorCode {
      * 设置错误内容
      * @param content
      */
-    public String getMessage() throws BizException ;
+    public String getMessage()  ;
 
     /**
      * 获取错误码

@@ -1,0 +1,46 @@
+{
+    "suggest": {
+        "_all": {
+            "enabled": false
+        },
+        "_source": {
+            "enabled": true
+        },
+        "properties": {
+            "keyword": {
+                "fields": {
+                    "keyword": {
+                        "type": "string",
+                        "index":    "not_analyzed"
+                    },
+                    "keyword_pinyin": {
+                        "type": "string",
+                        "store": false,
+                        "analyzer": "pinyin_analyzer"
+                    },
+                    "keyword_jianpin": {
+                        "type": "string",
+                        "store": false,
+                        "analyzer": "pinyin_first_letter_keyword_analyzer"
+                    }
+                },
+                "type": "multi_field",
+                "path": "just_name"
+            },
+            "weight": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "count": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            }
+        }
+    }
+}

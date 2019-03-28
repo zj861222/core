@@ -1,0 +1,11 @@
+/Users/zhangjun/Documents/code/waiqin365/code/core/message/src/main/java/com/framework/core/message/rabbit/factory/TopicMessageConsumer.java
+/Users/zhangjun/Documents/code/waiqin365/code/core/message/src/main/java/com/framework/core/message/rabbit/factory/internal/consumer/FanoutMessageConsumerFactory.java
+/Users/zhangjun/Documents/code/waiqin365/code/core/message/src/main/java/com/framework/core/message/rabbit/constants/ExchangeType.java
+/Users/zhangjun/Documents/code/waiqin365/code/core/message/src/main/java/com/framework/core/message/rabbit/factory/MessageConsumer.java
+/Users/zhangjun/Documents/code/waiqin365/code/core/message/src/main/java/com/framework/core/message/rabbit/factory/RabbitProducerTemplate.java
+/Users/zhangjun/Documents/code/waiqin365/code/core/message/src/main/java/com/framework/core/message/rabbit/factory/FanoutMessageConsumer.java
+/Users/zhangjun/Documents/code/waiqin365/code/core/message/src/main/java/com/framework/core/message/rabbit/factory/internal/producer/TopicProducerTemplate.java
+/Users/zhangjun/Documents/code/waiqin365/code/core/message/src/main/java/com/framework/core/message/rabbit/factory/internal/producer/FanoutProducerTemplate.java
+/Users/zhangjun/Documents/code/waiqin365/code/core/message/src/main/java/com/framework/core/message/rabbit/factory/internal/consumer/TopicMessageConsumerFactory.java
+/Users/zhangjun/Documents/code/waiqin365/code/core/message/src/main/java/com/framework/core/message/rabbit/factory/internal/producer/BaseProducerTemplate.java
+/Users/zhangjun/Documents/code/waiqin365/code/core/message/src/main/java/com/framework/core/message/rabbit/constants/RabbitConstants.java

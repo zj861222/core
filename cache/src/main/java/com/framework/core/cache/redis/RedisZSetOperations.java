@@ -1,12 +1,15 @@
 package com.framework.core.cache.redis;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
-import org.springframework.data.redis.core.Cursor;
-import org.springframework.data.redis.core.RedisOperations;
-import org.springframework.data.redis.core.ScanOptions;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.redis.core.ZSetOperations;
+
+import com.framework.core.common.strategy.ChoiceStrategy;
+import com.framework.core.common.strategy.RoundRobinStrategy;
 
 
 /**
@@ -21,6 +24,11 @@ public class RedisZSetOperations<K, V> {
 	private ZSetOperations<K, V> zsetOperations;
 
 	private ZSetOperations<K, V> zsetOperationsReadOnly;
+	
+	private List<ZSetOperations<K, V>> operationsList = new ArrayList<>();
+
+	// 选择从库的策略
+	private ChoiceStrategy strategy = new RoundRobinStrategy();
 
 	public ZSetOperations<K, V> getZsetOperations() {
 		return zsetOperations;
@@ -55,53 +63,53 @@ public class RedisZSetOperations<K, V> {
 	}
 
 	public Set<V> range(K key, long start, long end) {
-		return zsetOperationsReadOnly.range(key, start, end);
+		return getRandomReadHashOperations().range(key, start, end);
 	}
 
 	public Set<V> reverseRange(K key, long start, long end) {
-		return zsetOperationsReadOnly.reverseRange(key, start, end);
+		return getRandomReadHashOperations().reverseRange(key, start, end);
 	}
 
 	public Set<ZSetOperations.TypedTuple<V>> rangeWithScores(K key, long start, long end) {
-		return zsetOperationsReadOnly.rangeWithScores(key, start, end);
+		return getRandomReadHashOperations().rangeWithScores(key, start, end);
 	}
 
 	public Set<ZSetOperations.TypedTuple<V>> reverseRangeWithScores(K key, long start, long end) {
-		return zsetOperationsReadOnly.reverseRangeWithScores(key, start, end);
+		return getRandomReadHashOperations().reverseRangeWithScores(key, start, end);
 	}
 
 	public Set<V> rangeByScore(K key, double min, double max) {
-		return zsetOperationsReadOnly.rangeByScore(key, min, max);
+		return getRandomReadHashOperations().rangeByScore(key, min, max);
 	}
 
 	public Set<V> rangeByScore(K key, double min, double max, long offset, long count) {
-		return zsetOperationsReadOnly.rangeByScore(key, min, max, offset, count);
+		return getRandomReadHashOperations().rangeByScore(key, min, max, offset, count);
 	}
 
 	public Set<V> reverseRangeByScore(K key, double min, double max) {
-		return zsetOperationsReadOnly.reverseRangeByScore(key, min, max);
+		return getRandomReadHashOperations().reverseRangeByScore(key, min, max);
 	}
 
 	public Set<V> reverseRangeByScore(K key, double min, double max, long offset, long count) {
-		return zsetOperationsReadOnly.reverseRangeByScore(key, min, max, offset, count);
+		return getRandomReadHashOperations().reverseRangeByScore(key, min, max, offset, count);
 	}
 
 	public Set<ZSetOperations.TypedTuple<V>> rangeByScoreWithScores(K key, double min, double max) {
-		return zsetOperationsReadOnly.rangeByScoreWithScores(key, min, max);
+		return getRandomReadHashOperations().rangeByScoreWithScores(key, min, max);
 	}
 
 	public Set<ZSetOperations.TypedTuple<V>> rangeByScoreWithScores(K key, double min, double max, long offset,
 			long count) {
-		return zsetOperationsReadOnly.rangeByScoreWithScores(key, min, max, offset, count);
+		return getRandomReadHashOperations().rangeByScoreWithScores(key, min, max, offset, count);
 	}
 
 	public Set<ZSetOperations.TypedTuple<V>> reverseRangeByScoreWithScores(K key, double min, double max) {
-		return zsetOperationsReadOnly.reverseRangeByScoreWithScores(key, min, max);
+		return getRandomReadHashOperations().reverseRangeByScoreWithScores(key, min, max);
 	}
 
 	public Set<ZSetOperations.TypedTuple<V>> reverseRangeByScoreWithScores(K key, double min, double max, long offset,
 			long count) {
-		return zsetOperationsReadOnly.reverseRangeByScoreWithScores(key, min, max, offset, count);
+		return getRandomReadHashOperations().reverseRangeByScoreWithScores(key, min, max, offset, count);
 	}
 
 	public Boolean add(K key, V value, double score) {
@@ -117,15 +125,15 @@ public class RedisZSetOperations<K, V> {
 	}
 
 	public Long rank(K key, Object o) {
-		return zsetOperationsReadOnly.rank(key, o);
+		return getRandomReadHashOperations().rank(key, o);
 	}
 
 	public Long reverseRank(K key, Object o) {
-		return zsetOperationsReadOnly.reverseRank(key, o);
+		return getRandomReadHashOperations().reverseRank(key, o);
 	}
 
 	public Double score(K key, Object o) {
-		return zsetOperationsReadOnly.score(key, o);
+		return getRandomReadHashOperations().score(key, o);
 	}
 
 	public Long remove(K key, Object... values) {
@@ -160,7 +168,7 @@ public class RedisZSetOperations<K, V> {
 	 */
 
 	public Long size(K key) {
-		return zsetOperationsReadOnly.size(key);
+		return getRandomReadHashOperations().size(key);
 	}
 
 	/**
@@ -173,22 +181,48 @@ public class RedisZSetOperations<K, V> {
 	 */
 
 	public Long zCard(K key) {
-		return zsetOperationsReadOnly.zCard(key);
+		return getRandomReadHashOperations().zCard(key);
 	}
 
-	public RedisOperations<K, V> getOperations() {
-		return null;
+
+	/**
+	 * 获取随机的读库，可能是只读库，也可能是主库。
+	 * 
+	 * @return
+	 */
+	private ZSetOperations<K, V> getRandomReadHashOperations()
+	{
+
+		if (operationsList.isEmpty())
+		{
+			initList();
+		}
+
+		ZSetOperations<K, V> result = null;
+
+		if (CollectionUtils.isNotEmpty(operationsList))
+		{
+			result = strategy.getInstance(operationsList);
+		}
+
+		return result == null ? zsetOperationsReadOnly : result;
 	}
 
 	/**
-	 * @param key
-	 * @param options
-	 * @return
-	 * @since 1.4
+	 * 初始化list
 	 */
+	private synchronized void initList()
+	{
 
-	public Cursor<ZSetOperations.TypedTuple<V>> scan(K key, ScanOptions options) {
-		return null;
+		if (CollectionUtils.isNotEmpty(operationsList))
+		{
+			return;
+		}
+
+		operationsList.add(zsetOperations);
+		operationsList.add(zsetOperationsReadOnly);
+
 	}
-
+	
+	
 }

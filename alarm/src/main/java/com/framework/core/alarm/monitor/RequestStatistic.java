@@ -32,21 +32,21 @@ public class RequestStatistic {
 	 * 启动线程，每分钟打印日志，重置统计区间的取值
 	 */
 	static{
-		Thread thread = new Thread(new Runnable() {
-			public void run() {
-				while(true) {
-					try {
-						//每分钟输出一次
-						Thread.sleep(60 * 1000);
-						RequestStatistic.dump();
-					} catch (Exception e) {
-						//do nothing
-						//catch all exception
-					}
-				}
-			}
-		});
-		thread.start();
+//		Thread thread = new Thread(new Runnable() {
+//			public void run() {
+//				while(true) {
+//					try {
+//						//每分钟输出一次
+//						Thread.sleep(60 * 1000);
+//						RequestStatistic.dump();
+//					} catch (Exception e) {
+//						//do nothing
+//						//catch all exception
+//					}
+//				}
+//			}
+//		});
+//		thread.start();
 	}
 	
 	/**

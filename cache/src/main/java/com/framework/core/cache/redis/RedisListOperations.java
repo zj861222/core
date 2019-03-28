@@ -1,12 +1,16 @@
 package com.framework.core.cache.redis;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.beans.factory.BeanNameAware;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisOperations;
+
+import com.framework.core.common.strategy.ChoiceStrategy;
+import com.framework.core.common.strategy.RoundRobinStrategy;
 
 
 
@@ -24,6 +28,11 @@ public class RedisListOperations<K, V> {
 	private ListOperations<K, V> listOperationsReadOnly;
 
 
+	private List<ListOperations<K, V>> operationsList = new ArrayList<>();
+
+	//选择从库的策略
+	private ChoiceStrategy strategy = new RoundRobinStrategy();
+	
 	public ListOperations<K, V> getListOperations() {
 		return listOperations;
 	}
@@ -41,7 +50,7 @@ public class RedisListOperations<K, V> {
 	}
 
 	public List<V> range(K key, long start, long end) {
-		return listOperationsReadOnly.range(key, start, end);
+		return getRandomReadHashOperations().range(key, start, end);
 	}
 
 	public void trim(K key, long start, long end) {
@@ -49,13 +58,14 @@ public class RedisListOperations<K, V> {
 	}
 
 	public Long size(K key) {
-		return listOperationsReadOnly.size(key);
+		return getRandomReadHashOperations().size(key);
 	}
 
 	public Long leftPush(K key, V value) {
 		return listOperations.leftPush(key, value);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Long leftPushAll(K key, V... values) {
 		return listOperations.leftPushAll(key, values);
 	}
@@ -89,6 +99,7 @@ public class RedisListOperations<K, V> {
 		return listOperations.rightPush(key, value);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Long rightPushAll(K key, V... values) {
 		return listOperations.rightPushAll(key, values);
 	}
@@ -143,7 +154,7 @@ public class RedisListOperations<K, V> {
 	}
 
 	public V index(K key, long index) {
-		return listOperationsReadOnly.index(key, index);
+		return getRandomReadHashOperations().index(key, index);
 	}
 
 	public V leftPop(K key) {
@@ -172,6 +183,48 @@ public class RedisListOperations<K, V> {
 
 	public RedisOperations<K, V> getOperations() {
 		return null;
+	}
+	
+	
+	
+	
+	/**
+	 * 获取随机的读库，可能是只读库，也可能是主库。
+	 * 
+	 * @return
+	 */
+	private ListOperations<K, V> getRandomReadHashOperations()
+	{
+
+		if (operationsList.isEmpty())
+		{
+			initList();
+		}
+
+		ListOperations<K, V> result = null;
+		
+		if (CollectionUtils.isNotEmpty(operationsList))
+		{
+			result =  strategy.getInstance(operationsList);
+		}
+		
+		return result == null?listOperationsReadOnly:result;
+	}
+
+	/**
+	 * 初始化list
+	 */
+	private synchronized void initList()
+	{
+
+		if (CollectionUtils.isNotEmpty(operationsList))
+		{
+			return;
+		}
+
+		operationsList.add(listOperations);
+		operationsList.add(listOperationsReadOnly);
+
 	}
 
 }

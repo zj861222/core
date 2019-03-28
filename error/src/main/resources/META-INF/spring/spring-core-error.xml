@@ -8,11 +8,13 @@
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <!--  错误码 -->
-    <bean id="errorMap" class="org.springframework.beans.factory.config.YamlMapFactoryBean">
+    <bean id="errorMap" class="com.framework.core.error.exception.internel.yml.MyYamlMapFactoryBean">
         <property name="resources">
             <list>
                 <value>classpath*:META-INF/errorcode/system-error-base.yml</value>
                 <value>classpath*:META-INF/errorcode/service-error-*.yml</value>
+                <value>classpath*:META-INF/errorcode/*/service-error-*.yml</value>
+                
             </list>
         </property>
     </bean>

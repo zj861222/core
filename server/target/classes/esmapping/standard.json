@@ -1,0 +1,29 @@
+{
+    "standard": {
+        "_all": {
+            "enabled": false
+        },
+        "_source": {
+            "enabled": true
+        },
+        "_id": {
+            "path": "parameterId"
+        },
+        "properties": {
+            "parameterId": {
+                "type": "integer"
+            },
+            "parameterValue": {
+                "type": "string",
+                "index":    "not_analyzed"
+            },
+            "standardId": {
+                "type": "integer"
+            },
+            "standardName": {
+                "type": "string",
+                "index":    "not_analyzed"
+            }
+        }
+    }
+}

@@ -24,8 +24,6 @@ public class InfluxDBHolder {
         influxDB.enableBatch(1500, 50, TimeUnit.MILLISECONDS);
 
 
-
-
     }
 
 

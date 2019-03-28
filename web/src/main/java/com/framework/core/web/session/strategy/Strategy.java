@@ -24,7 +24,7 @@ public interface Strategy {
 	 * @param reponse
 	 * @return 
 	 */
-	StrategyEnum vaidateToken(String token, HttpServletRequest request, HttpServletResponse reponse) throws BizException;
+	StrategyEnum vaidateToken(String token, HttpServletRequest request, HttpServletResponse reponse) ;
 
 	/**
 	 * 获取策略的优先级，优先级高的优先执行.优先级从 0-10.10 级最优先执行 从性能最优考虑，建议: 1. 白名单校验放 10级 2.

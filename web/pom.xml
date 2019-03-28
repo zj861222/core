@@ -5,36 +5,42 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.framework.core</groupId>
-		<artifactId>core</artifactId>
-		<version>0.0.3</version>
+		<artifactId>framework-core</artifactId>
+        <version>0.0.56</version>
 	</parent>
 
     <groupId>com.framework.core</groupId>
-    <artifactId>core-web</artifactId>
-    <name>core-web</name>
+    <artifactId>framework-core-web</artifactId>
+    <name>framework-core-web</name>
     <url>http://maven.apache.org</url>
 
     <dependencies>
 
         <dependency>
                 <groupId>com.framework.core</groupId>
-                <artifactId>core-cache</artifactId>
+                <artifactId>framework-core-cache</artifactId>
         </dependency>
 
         <dependency>
                 <groupId>com.framework.core</groupId>
-                <artifactId>core-dal</artifactId>
+                <artifactId>framework-core-dal</artifactId>
         </dependency>
 
         <dependency>
                 <groupId>com.framework.core</groupId>
-                <artifactId>core-alarm</artifactId>
+                <artifactId>framework-core-alarm</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+             <scope>provided</scope>
+        </dependency> 
+ 
    
         <dependency>
                 <groupId>com.framework.core</groupId>
-                <artifactId>core-zookeeper</artifactId>
+                <artifactId>framework-core-zookeeper</artifactId>
         </dependency>
 
 

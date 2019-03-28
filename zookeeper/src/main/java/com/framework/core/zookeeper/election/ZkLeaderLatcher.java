@@ -23,8 +23,9 @@ import java.util.Map.Entry;
 /**
  * recipes包里面提供了Leader选举实现，Spark中的master选举使用的就是reciples包里面的LeaderLatch，
  * 使用他们可以极大的简化代码，使你将注意力更多的放在核心业务逻辑上
+ * 
  * Leader选举的实现在org.apache.curator.framework.recipes.leader包中，这个包提供了两组Leader选举：
- * 1.LeaderLatch,LeaderLatchListener
+ * 1.LeaderLatch,LeaderLatchListener，leader latch里实现了ConnectionStateListener ，监听状态变化
  * 2.LeaderSelector,LeaderSelectorListener,LeaderSelectorListenerAdapter。
  * 
  * 这里实现的是第一个方法
@@ -102,11 +103,28 @@ public class ZkLeaderLatcher implements ApplicationContextAware {
 
 				@Override
 				public void isLeader() {
+					
+				    // could have lost leadership by now.  
+				    //现在leadership可能已经被剥夺了。。详情参见Curator的实现。
+					LeaderLatch latch = latchs.get(latchType);
+					if(latch==null || !latch.hasLeadership()) {
+						return;
+					}
+					
 					triggerSetupLeader(true, latchType);
 				}
 
 				@Override
 				public void notLeader() {
+					
+				    // could have  leadership by now.  
+				    //现在leadership可能已经被赋予leader了。。详情参见Curator的实现。
+					LeaderLatch latch = latchs.get(latchType);
+
+					if(latch==null || latch.hasLeadership()) {
+						return;
+					}
+					
 					triggerSetupLeader(false, latchType);
 				}
 			});

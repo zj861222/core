@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.framework.core.task.internel.dao.impl.TaskExecResultDAOImpl">
+
+	<resultMap id="BaseResultMap" type="com.framework.core.task.internel.model.TaskExecResult">
+		<result column="job_name" property="jobName" jdbcType="VARCHAR" />
+		<result column="tenant_id" property="tenantId" jdbcType="BIGINT" />
+		<result column="batch_no" property="batchNo" jdbcType="INTEGER" />
+		<result column="status" property="status" jdbcType="INTEGER" />
+		<result column="fail_times" property="failTimes" jdbcType="INTEGER" />
+		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="MODIFY_TIME" property="modifyTime" jdbcType="TIMESTAMP" />
+		<result column="ip" property="ip" jdbcType="VARCHAR" />
+		<result column="sharding_filed" property="shardingFiled" jdbcType="BIGINT" />
+	</resultMap>	
+	
+
+	<insert id="insertBatchTaskExecInfo" parameterType="java.util.List">
+		insert into task_exec_result (job_name, tenant_id,
+		batch_no,status,fail_times,ip,sharding_filed,CREATE_TIME,MODIFY_TIME)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.jobName}, #{item.tenantId},#{item.batchNo},
+			#{item.status},#{item.failTimes},#{item.ip},#{item.shardingFiled},#{item.createTime},#{item.modifyTime})
+
+		</foreach>
+	</insert>
+
+
+	<update id="updateStatus" parameterType="java.util.Map">
+		update task_exec_result
+		<set>
+			status = #{status} ,
+			ip = #{ip} ,
+			MODIFY_TIME = now()
+		</set>
+		where job_name = #{jobName} and tenant_id = #{tenantId} and batch_no = #{batchNo};
+
+	</update>
+
+
+	<update id="updateToFailOrGiveUp" parameterType="java.util.Map">
+		update task_exec_result
+		<set>
+			status = #{status} ,
+			ip = #{ip} ,
+			fail_times = fail_times +1,
+			MODIFY_TIME = now()
+		</set>
+		where job_name = #{jobName} and tenant_id = #{tenantId} and batch_no = #{batchNo};
+
+	</update>
+
+
+	<select id="queryExecRecordByShardingByStatus" resultMap="BaseResultMap"
+		parameterType="java.util.Map">
+		select * from task_exec_result where job_name = #{jobName} 
+		and batch_no = #{batchNo} and (sharding_filed % #{totalSharding} = #{sharding}) and status = #{status}  limit #{batchLimit};
+	</select>
+
+
+	<select id="queryExecRecordByStatus" resultMap="BaseResultMap"
+		parameterType="java.util.Map">
+		select * from task_exec_result where job_name = #{jobName} 
+		and batch_no = #{batchNo}  and status = #{status}  limit #{batchLimit};
+	</select>
+
+
+	<select id="queryWaittingStatusRecordFromNHoursBefore" resultMap="BaseResultMap"
+		parameterType="java.util.Map">
+		select * from task_exec_result where <![CDATA[ create_time > #{startTime} ]]> and status = #{status} ;
+	</select>
+
+
+
+</mapper>

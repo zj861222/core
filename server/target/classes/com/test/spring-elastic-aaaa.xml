@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context" 
+    xmlns:reg="http://www.dangdang.com/schema/ddframe/reg" 
+    xmlns:job="http://www.dangdang.com/schema/ddframe/job" 
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                        http://www.springframework.org/schema/beans/spring-beans.xsd 
+                        http://www.springframework.org/schema/context 
+                        http://www.springframework.org/schema/context/spring-context.xsd 
+                        http://www.dangdang.com/schema/ddframe/reg 
+                        http://www.dangdang.com/schema/ddframe/reg/reg.xsd 
+                        http://www.dangdang.com/schema/ddframe/job 
+                        http://www.dangdang.com/schema/ddframe/job/job.xsd 
+                        ">
+   
+
+     <!-- 
+     <job:dataflow id="Test1" class="com.waiqin365.task.biz.Test1" streaming-process="true" registry-center-ref="regCenter" cron="0 0/1 * * * ?" sharding-total-count="2" overwrite="true" >  
+             <job:listener class="com.waiqin365.task.biz.Test1" />
+    </job:dataflow>   -->   
+    
+    
+    <!--  */5 * * * * ?  每5秒-->
+    <!--  0 0/1 * * * ?  每分钟-->
+    <job:dataflow id="esJobTest1" class="com.waiqin365.task.biz.EsJobTest1" streaming-process="true" registry-center-ref="regCenter" cron="*/9 * * * * ?" sharding-total-count="1" overwrite="true" >  
+             <job:listener class="com.waiqin365.task.biz.EsJobTest1" />
+    </job:dataflow>   
+
+</beans>

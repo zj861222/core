@@ -1,0 +1,21 @@
+{
+    "size": {
+        "_all": {
+            "enabled": false
+        },
+        "_source": {
+            "enabled": true
+        },
+        "_id": {
+            "path": "id"
+        },
+        "properties": {
+            "id": {
+                "type": "long"
+            },
+            "sizeName": {
+                "type": "string"
+            }
+        }
+    }
+}

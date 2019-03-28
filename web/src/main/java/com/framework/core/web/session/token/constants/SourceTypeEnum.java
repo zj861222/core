@@ -1,6 +1,5 @@
 package com.framework.core.web.session.token.constants;
 
-import java.util.List;
 
 public enum SourceTypeEnum
 {
@@ -14,7 +13,10 @@ public enum SourceTypeEnum
 	//客户端，包括android和ios
 	SOURCE_TYPE_CLIENT ("CLIENT"),
 
-
+	//微信web端
+	SOURCE_TYPE_WEBCHAT_WEB ("WX_WEB"),	
+	
+	
 	;
     /**
      * code

@@ -1,0 +1,71 @@
+{
+    "storehouse": {
+        "_all":{
+            "enabled":false
+        },
+        "_source":{
+            "enabled":true
+        },
+        "_id":{
+            "path":"id"
+        },
+        "properties": {
+            "id": {
+                "type": "long"
+            },
+            "seasonId": {
+                "type": "integer",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "orderBy": {
+                "type": "integer",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "viewNum": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "editTime": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "createTime": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "caption": {
+                "type": "string",
+                "store": false,
+                "index_analyzer": "mmseg_complex",
+                "search_analyzer": "mmseg_complex"
+            },
+            "tags": {
+                "type": "string",
+                "store": false,
+                "index_analyzer": "mmseg_complex",
+                "search_analyzer": "mmseg_complex"
+            },
+            "content": {
+                "type": "string",
+                "store": false,
+                "index_analyzer": "mmseg_complex",
+                "search_analyzer": "mmseg_complex"
+            }
+        }
+    }
+}

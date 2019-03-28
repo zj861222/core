@@ -34,7 +34,8 @@ public enum ZookeeperErrorCode implements ErrorCode {
   //zookeeper 删除节点失败
   EX_ZK_DELETE_NODE_DATA_FAIL (100012007),
 	
- 
+  //删除节点失败，含有子节点
+  EX_ZK_DELETE_NODE_FAIL_FOR_NOT_EMPTY (100012008), 
 	;
 
 	

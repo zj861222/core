@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.framework.core.task.internel.dao.impl.TaskScheduleDAOImpl">
+
+	<resultMap id="BaseResultMap" type="com.framework.core.task.internel.model.TaskSchedule">
+	
+		<result column="job_name" property="jobName" jdbcType="VARCHAR" />
+		<result column="batch_no" property="batchNo" jdbcType="INTEGER" />
+
+		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="MODIFY_TIME" property="modifyTime" jdbcType="TIMESTAMP" />
+
+	</resultMap>	
+	
+
+
+
+	<select id="queryTaskScheduleByJobName" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select * from task_schedule where job_name = #{jobName} 
+	</select>
+
+
+
+
+	<insert id="insertOrUpdateTaskSchedule" parameterType="com.framework.core.task.internel.model.TaskSchedule">
+		insert into task_schedule (job_name, batch_no,CREATE_TIME,MODIFY_TIME)
+		values (#{jobName},#{batchNo},#{createTime},#{modifyTime})
+	</insert>
+
+
+	<update id="updateTaskSchedule" parameterType="java.util.Map">
+		update task_schedule
+		<set>
+			batch_no = #{batchNo} ,
+			MODIFY_TIME = now()
+		</set>
+		where job_name = #{jobName} and batch_no = (#{batchNo} -1);
+
+	</update>
+	
+	
+
+    
+
+</mapper>

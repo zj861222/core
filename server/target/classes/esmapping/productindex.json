@@ -1,0 +1,714 @@
+{
+    "productindex": {
+        "_all":{
+            "enabled":false
+        },
+        "_source":{
+            "enabled":true
+        },
+        "_id":{
+            "path":"id"
+        },
+        "properties": {
+            "id": {
+                "type": "long"
+            },
+            "productId": {
+                "type": "long"
+            },
+            "salesNum": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "isSoonSoldOut": {
+                "type": "string",
+                "index":    "not_analyzed",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "isSoldOut": {
+                "type": "string",
+                "index":    "not_analyzed",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "soldOut": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "storageNum": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "sortWeight": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "brandWeight": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "shelveTime": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "shelveDay": {
+                "type": "string",
+                "index":    "not_analyzed",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "salesPrice": {
+                "type": "double",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "promotionDiscount": {
+                "type": "double",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "promotionDiscountInt": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "specialPrice": {
+                "type": "double",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "marketPrice": {
+                "type": "double",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "vipPrice": {
+                "type": "double",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "vip1Price": {
+                "type": "double",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "vip2Price": {
+                "type": "double",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "vip3Price": {
+                "type": "double",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "islimited": {
+                "type": "string",
+                "index":    "not_analyzed",
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "isnew": {
+                "type": "string",
+                "index":    "not_analyzed",
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "brandId": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "isdown": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "isadvance": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "cnAlphabet": {
+                "type": "string",
+                "index":    "not_analyzed"
+            },
+            "isAuditing": {
+                "type": "string",
+                "index":    "not_analyzed"
+            },
+            "brandAlif": {
+                "type": "string",
+                "index":    "not_analyzed",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "productName": {
+                "fields": {
+                    "productName": {
+                        "type": "string",
+                        "index":    "not_analyzed",
+                        "copy_to":  ["searchField","searchField_ansj"]
+                    },
+                    "productName_ansj": {
+                        "type": "string",
+                        "store": false,
+                        "index_analyzer": "mmseg_complex",
+                        "search_analyzer": "mmseg_complex"
+                    }
+                },
+                "type": "multi_field",
+                "path": "just_name"
+            },
+            "brandNameCn": {
+                "fields": {
+                    "brandNameCn": {
+                        "type": "string",
+                        "store": false,
+                        "index_analyzer": "mmseg_complex",
+                        "search_analyzer": "mmseg_complex",
+                        "copy_to":  ["searchField","searchField_ansj"]
+                    },
+                    "brandNameCn_pinyin": {
+                        "type": "string",
+                        "store": false,
+                        "index_analyzer": "pinyin_analyzer",
+                        "search_analyzer": "standard"
+                    }
+                },
+                "type": "multi_field",
+                "path": "just_name"
+            },
+            "brandNameEn": {
+                "type": "string",
+                "store": false,
+                "index_analyzer": "mmseg_complex",
+                "search_analyzer": "mmseg_complex",
+                "copy_to":  ["searchField","searchField_ansj"]
+            },
+            "brandKeyword": {
+                "type": "string",
+                "store": false,
+                "index_analyzer": "mmseg_complex",
+                "search_analyzer": "mmseg_complex"
+            },
+            "brandDomain": {
+                "type": "string",
+                "index_analyzer": "lowercase_keyword",
+                "search_analyzer": "lowercase_keyword",
+                "copy_to":  ["searchField","searchField_ansj"]
+            },
+            "hotKeyword": {
+                "type": "string",
+                "store": false,
+                "index_analyzer": "mmseg_complex",
+                "search_analyzer": "mmseg_complex"
+            },
+            "brandName": {
+                "type": "string",
+                "store": false,
+                "index_analyzer": "mmseg_complex",
+                "search_analyzer": "mmseg_complex",
+                "copy_to":  ["searchField","searchField_ansj"]
+            },
+            "salesPhrase": {
+                "type": "string",
+                "store": false,
+                "index_analyzer": "mmseg_complex",
+                "search_analyzer": "mmseg_complex",
+                "copy_to":  "searchField_ansj"
+            },
+            "productSkn": {
+                "fields": {
+                    "productSkn": {
+                        "type": "string",
+                        "index":    "not_analyzed",
+                        "doc_values": true,
+                        "fielddata": {
+                            "format": "doc_values"
+                        }
+                    },
+                    "productSkn_ansj": {
+                        "type": "string",
+                        "store": false,
+                        "index_analyzer": "mmseg_complex",
+                        "search_analyzer": "mmseg_complex"
+                    }
+                },
+                "type": "multi_field",
+                "path": "just_name"
+            },
+            "maxSortName": {
+                "type": "string",
+                "index":    "not_analyzed",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "middleSortName": {
+                "type": "string",
+                "index":    "not_analyzed",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "smallSortName": {
+                "type": "string",
+                "index":    "not_analyzed",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "maxSort": {
+                "fields": {
+                    "maxSort": {
+                        "type": "string",
+                        "store": false,
+                        "index_analyzer": "mmseg_complex",
+                        "search_analyzer": "mmseg_complex",
+                        "copy_to":  ["searchField","searchField_ansj"]
+                    },
+                    "maxSort_pinyin": {
+                        "type": "string",
+                        "store": false,
+                        "index_analyzer": "pinyin_analyzer",
+                        "search_analyzer": "standard"
+                    }
+                },
+                "type": "multi_field",
+                "path": "just_name"
+            },
+            "middleSort": {
+                "fields": {
+                    "middleSort": {
+                        "type": "string",
+                        "store": false,
+                        "index_analyzer": "mmseg_complex",
+                        "search_analyzer": "mmseg_complex",
+                        "copy_to":  ["searchField","searchField_ansj"]
+                    },
+                    "middleSort_pinyin": {
+                        "type": "string",
+                        "store": false,
+                        "index_analyzer": "pinyin_analyzer",
+                        "search_analyzer": "standard"
+                    }
+                },
+                "type": "multi_field",
+                "path": "just_name"
+            },
+            "smallSort": {
+                "fields": {
+                    "smallSort": {
+                        "type": "string",
+                        "store": false,
+                        "index_analyzer": "mmseg_complex",
+                        "search_analyzer": "mmseg_complex",
+                        "copy_to":  ["searchField","searchField_ansj"]
+                    },
+                    "smallSort_pinyin": {
+                        "type": "string",
+                        "store": false,
+                        "index_analyzer": "pinyin_analyzer",
+                        "search_analyzer": "standard"
+                    }
+                },
+                "type": "multi_field",
+                "path": "just_name"
+            },
+            "maxSortId": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "middleSortId": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "smallSortId": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "gender": {
+                "type": "string",
+                "index":    "not_analyzed",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "style": {
+                "type": "string",
+                "store": false,
+                "index_analyzer": "mmseg_complex",
+                "search_analyzer": "mmseg_complex",
+                "copy_to":  ["searchField","searchField_ansj"]
+            },
+            "isSpecial": {
+                "type": "string",
+                "index":    "not_analyzed",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "isDiscount": {
+                "type": "string",
+                "index":    "not_analyzed",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "specialoffer": {
+                "type": "string",
+                "index":    "not_analyzed",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "sellChannels": {
+                "type": "string",
+                "index":    "not_analyzed",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "isDown": {
+                "type": "string",
+                "index":    "not_analyzed",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "isAdvance": {
+                "type": "string",
+                "index":    "not_analyzed",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "isSales": {
+                "type": "string",
+                "index":    "not_analyzed",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "isHot": {
+                "type": "string",
+                "index":    "not_analyzed",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "status": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "firstShelveTime": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "poolId": {
+                "type": "string",
+                "analyzer":"comma_spliter"
+            },
+            "isrecommend": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "ispromotion": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "vipDiscountType": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "isspecial": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "folderId": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "isOutlets": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "attribute": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "ishot": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "seasonsS": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "colorIds": {
+                "type": "string",
+                "analyzer":"comma_spliter"
+            },
+            "seasons": {
+                "type": "string",
+                "analyzer":"comma_spliter",
+                "copy_to":  ["searchField","searchField_ansj"]
+            },
+            "colorNames": {
+                "type": "string",
+                "store": false,
+                "index_analyzer": "mmseg_complex",
+                "search_analyzer": "mmseg_complex",
+                "copy_to":  ["searchField","searchField_ansj"]
+            },
+            "sizeIds": {
+                "type": "string",
+                "analyzer":"comma_spliter"
+            },
+            "standardIds": {
+                "type": "string",
+                "analyzer":"comma_spliter"
+            },
+            "standardNames": {
+                "type": "string",
+                "analyzer":"comma_spliter"
+            },
+            "standardOnlyNames": {
+                "fields": {
+                    "standardOnlyNames": {
+                        "type": "string",
+                        "index":    "not_analyzed",
+                        "copy_to":  "searchField_ansj"
+                    },
+                    "standardOnlyNames_ansj": {
+                        "type": "string",
+                        "store": false,
+                        "index_analyzer": "mmseg_complex",
+                        "search_analyzer": "mmseg_complex"
+                    }
+                },
+                "type": "multi_field",
+                "path": "just_name"
+            },
+            "styleIds": {
+                "type": "string",
+                "analyzer":"comma_spliter"
+            },
+            "genderS": {
+                "type": "string",
+                "analyzer":"comma_spliter",
+                "copy_to":  ["searchField","searchField_ansj"]
+            },
+            "defaultImages": {
+                "type": "string"
+            },
+            "editTime": {
+                "type": "integer",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "basePinRatio": {
+                "type": "double",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "breakingRate": {
+                "type": "double",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "discountScore": {
+                "type": "double",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "searchField_ansj": {
+                "type": "string",
+                "store": false,
+                "index_analyzer": "mmseg_complex",
+                "search_analyzer": "mmseg_complex"
+            },
+            "searchField": {
+                "type": "string",
+                "index_analyzer": "lowercase_keyword_ngram",
+                "search_analyzer": "mmseg_complex"
+            },
+            "goodsList": {
+                "properties": {
+                    "color_code": {
+                        "type": "string",
+                        "index":    "not_analyzed"
+                    },
+                    "color_id": {
+                        "type": "string",
+                        "index":    "not_analyzed"
+                    },
+                    "color_name": {
+                        "type": "string",
+                        "index":    "not_analyzed"
+                    },
+                    "color_value": {
+                        "type": "string",
+                        "index":    "not_analyzed"
+                    },
+                    "goods_id": {
+                        "type": "string",
+                        "index":    "not_analyzed"
+                    },
+                    "images_url": {
+                        "type": "string",
+                        "index":    "not_analyzed"
+                    },
+                    "is_default": {
+                        "type": "string",
+                        "index":    "not_analyzed"
+                    },
+                    "product_skc": {
+                        "type": "string",
+                        "index":    "not_analyzed"
+                    },
+                    "status": {
+                        "type": "string",
+                        "index":    "not_analyzed"
+                    }
+                }
+            },
+            "activities": {
+                "type" : "nested",
+                "properties": {
+                    "activity_id": {
+                        "type": "integer"
+                    },
+                    "template_id": {
+                        "type": "integer"
+                    },
+                    "order_by": {
+                        "type": "integer"
+                    },
+                    "is_recommend": {
+                        "type": "integer"
+                    },
+                    "status": {
+                        "type": "integer"
+                    }
+                }
+            }
+        }
+    }
+}

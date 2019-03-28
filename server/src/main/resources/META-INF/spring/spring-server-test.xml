@@ -14,65 +14,154 @@
                         http://www.springframework.org/schema/task
                         http://www.springframework.org/schema/task/spring-task.xsd">
 
-	<aop:aspectj-autoproxy />
-	<context:property-placeholder ignore-resource-not-found="true" location="classpath*:core.config.properties" />
-
-	<context:component-scan base-package="com.framework.core" />
+	<context:property-placeholder  location="classpath*:core.config.properties" />
 
 
-	<!-- 启动SpringMVC的注解功能，完成请求和注解POJO的映射 -->
-	<mvc:annotation-driven>
-		<mvc:message-converters>
-			<ref bean="stringConverter" />
-			<ref bean="jsonConverter" />
-		</mvc:message-converters>
-	</mvc:annotation-driven>
-
+	<context:component-scan base-package="com.framework.core,com.waiqin365" />
 
 
     <bean id="stringRedisSerializer"
             class="org.springframework.data.redis.serializer.StringRedisSerializer"/>
 
 
-	<!-- byte[] 转换器 -->
-	<bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/>
 
-	<!--字符串转换器 -->
-	<bean id="stringConverter" class="org.springframework.http.converter.StringHttpMessageConverter">
-		<property name="supportedMediaTypes">
+	<bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="messageConverters">
 			<list>
-				<value>text/plain;charset=UTF-8</value>
-				<value>text/html;charset=UTF-8</value>
+				<bean
+					class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+					<property name="supportedMediaTypes">
+						<list>
+							<value>text/plain;charset=utf-8</value>
+							<value>text/html;charset=utf-8</value>
+							<value>text/json;charset=utf-8</value>
+							<value>application/json;charset=utf-8</value>
+						</list>
+					</property>
+					<property name="features">
+						<list>
+							<value>WriteMapNullValue</value>
+							<value>WriteNullListAsEmpty</value>
+							<value>WriteNullStringAsEmpty</value>
+							<value>WriteNullNumberAsZero</value>
+							<value>WriteNullBooleanAsFalse</value>
+							<value>WriteDateUseDateFormat</value>
+							<value>DisableCircularReferenceDetect</value>
+							<value>QuoteFieldNames</value>
+						</list>
+					</property>
+				</bean>
+				<bean
+					class="org.springframework.http.converter.ByteArrayHttpMessageConverter">
+					<property name="supportedMediaTypes">
+						<list>
+							<value>image/jpeg</value>
+							<value>image/png</value>
+							<value>image/jpg</value>
+							<value>image/gif</value>
+							<value>application/x-bmp</value>
+						</list>
+					</property>
+				</bean>
+				<bean
+					class="org.springframework.http.converter.StringHttpMessageConverter">
+					<property name="supportedMediaTypes">
+						<list>
+							<value>text/html;charset=UTF-8</value>
+							<value>text/plain;charset=UTF-8</value>
+						</list>
+					</property>
+				</bean>
+				<bean class="org.springframework.http.converter.FormHttpMessageConverter">
+					<property name="supportedMediaTypes">
+						<list>
+							<value>text/html;charset=UTF-8</value>
+						</list>
+					</property>
+				</bean>
 			</list>
 		</property>
 	</bean>
-	
 
-	<!-- json转换器 application/json -->
-	<bean id="jsonConverter" class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
-      <property name="supportedMediaTypes" value="application/json;charset=UTF-8"/>
-      <property name="features">
-        <array value-type="com.alibaba.fastjson.serializer.SerializerFeature">
-         <value>DisableCircularReferenceDetect</value>
-        </array>
-      </property>
-    </bean>
-    
-    <bean id="DisableCircularReferenceDetect" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
-      <property name="staticField" value="com.alibaba.fastjson.serializer.SerializerFeature.DisableCircularReferenceDetect"></property>
-    </bean>
-
-
-
-
+	<bean
+		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<property name="order" value="0" />
+		<property name="contentNegotiationManager">
+			<bean
+				class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+				<property name="favorPathExtension" value="true" />
+				<property name="favorParameter" value="true" />
+				<property name="parameterName" value="format" />
+				<property name="mediaTypes">
+					<value>
+						json=application/json
+						xml=application/xml
+						html=text/html
+					</value>
+				</property>
+				<property name="defaultContentType" value="application/json" />
+			</bean>
+		</property>
+		<property name="defaultViews">
+			<list>
+				<bean class="com.alibaba.fastjson.support.spring.FastJsonJsonView" />
+			</list>
+		</property>
+	</bean>
  
+
+  <!--  -->
+   
+   <!--
     <aop:config>
-        <aop:pointcut id="daoPoint"
-                      expression="execution(* com.framework.core..*.dao..*.*(..)) or execution(* com.yoho.platform.dal.*.*.*(..)) or execution(* com.yoho.*.dal.*.*(..)) or execution(* com.yohobuy.platform.dal.*.*.*(..))"/>
-        <aop:advisor pointcut-ref="daoPoint" advice-ref="dataSourceMethodInterceptor"/>
+        <aop:pointcut id="serviceMethodPoint"
+                      expression="(execution(* com.framework.core.test..*.*(..))) or (execution(* com.fiberhome.*.*.service.*.*(..))) "/>
+        <aop:advisor pointcut-ref="serviceMethodPoint" advice-ref="serviceMethodInterceptor"/>
     </aop:config>
+   -->
  
+    
+  
+ 
+ 
+     <bean id = "test2Service" class="com.framework.core.test.service.Test2Service"/>
+ 
+    <bean id = "testService" class="com.framework.core.test.service.TestService">
+    		<property name="test2Service" ref="test2Service" />
+    </bean>
 
+    <bean id = "TestLeaderListener" class="com.framework.core.test.zookeeper.listener.TestLeaderListener"/>
+    
+    <bean id = "BizDataFetcherImpl" class="com.framework.core.test.hystrix.BizDataFetcherImpl"/>
+    
+    <bean id="topicConsumerTest" class="com.framework.core.test.message.rabbit.TopicConsumerTest"/>
+    <bean id="topicConsumerTest2" class="com.framework.core.test.message.rabbit.TopicConsumerTest2"/>
+    <bean id="topicConsumerTest3" class="com.framework.core.test.message.rabbit.TopicConsumerTest3"/>
+    <bean id="topicConsumerTest4" class="com.framework.core.test.message.rabbit.TopicConsumerTest4"/>
+    
+    <bean id="FanoutConsumerTest" class="com.framework.core.test.message.rabbit.FanoutConsumerTest"/>
+    <bean id="FanoutConsumerTest2" class="com.framework.core.test.message.rabbit.FanoutConsumerTest2"/>
+    <bean id="FanoutConsumerTest3" class="com.framework.core.test.message.rabbit.FanoutConsumerTest3"/>
+    <bean id="FanoutConsumerTest4" class="com.framework.core.test.message.rabbit.FanoutConsumerTest4"/>
 
-
+    
+	<bean id="asyncTaskExecutor"
+		class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="5" />
+		<property name="maxPoolSize" value="10" />
+		<property name="queueCapacity" value="25" />
+	</bean>
+	
+	<mvc:annotation-driven>
+		<mvc:async-support default-timeout="1000" task-executor="asyncTaskExecutor" />
+	</mvc:annotation-driven>
+    <!--  
+    <bean id="Test1" class="com.waiqin365.task.biz.Test1" parent="multiTenantJobTemplate" />
+    -->
+    
+    
+    <mvc:interceptors>
+		<ref bean="springMvcThreadProfileInterceptor"/>
+	</mvc:interceptors>
 </beans>

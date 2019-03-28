@@ -5,20 +5,20 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.framework.core</groupId>
-		<artifactId>core</artifactId>
-		<version>0.0.3</version>
+		<artifactId>framework-core</artifactId>
+        <version>0.0.56</version>
 	</parent>
 
     <groupId>com.framework.core</groupId>
-    <artifactId>core-dal</artifactId>
-    <name>core-dal</name>
+    <artifactId>framework-core-dal</artifactId>
+    <name>framework-core-dal</name>
     <url>http://maven.apache.org</url>
 
     <dependencies>
 
         <dependency>
                 <groupId>com.framework.core</groupId>
-                <artifactId>core-common</artifactId>
+                <artifactId>framework-core-common</artifactId>
         </dependency>
 
 
@@ -36,6 +36,17 @@
         <dependency>
                 <groupId>postgresql</groupId>
                 <artifactId>postgresql</artifactId>
+        </dependency>
+
+        <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-jdbc</artifactId>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.alibaba/druid -->
+        <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid</artifactId>
         </dependency>
 
 

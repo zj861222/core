@@ -1,0 +1,15 @@
+/Users/zhangjun/Documents/code/waiqin365/code/core/kafka/src/main/java/com/framework/core/kafka/factory/KafkaConsumerFactory.java
+/Users/zhangjun/Documents/code/waiqin365/code/core/kafka/src/main/java/com/framework/core/kafka/factory/internal/AbstractConsumerPropertiesBuilder.java
+/Users/zhangjun/Documents/code/waiqin365/code/core/kafka/src/main/java/com/framework/core/kafka/factory/internal/KafkaExecutorRunnable.java
+/Users/zhangjun/Documents/code/waiqin365/code/core/kafka/src/main/java/com/framework/core/kafka/KafkaMessage.java
+/Users/zhangjun/Documents/code/waiqin365/code/core/kafka/src/main/java/com/framework/core/kafka/exception/KafkaErrorCode.java
+/Users/zhangjun/Documents/code/waiqin365/code/core/kafka/src/main/java/com/framework/core/kafka/factory/internal/KafkaConsumerManager.java
+/Users/zhangjun/Documents/code/waiqin365/code/core/kafka/src/main/java/com/framework/core/kafka/factory/internal/KafkaConsumerRebalanceListener.java
+/Users/zhangjun/Documents/code/waiqin365/code/core/kafka/src/main/java/com/framework/core/kafka/constants/KafkaFailedMessagePolicy.java
+/Users/zhangjun/Documents/code/waiqin365/code/core/kafka/src/main/java/com/framework/core/kafka/factory/internal/CustomizeKafkaOffset.java
+/Users/zhangjun/Documents/code/waiqin365/code/core/kafka/src/main/java/com/framework/core/kafka/factory/KafkaProducerFactory.java
+/Users/zhangjun/Documents/code/waiqin365/code/core/kafka/src/main/java/com/framework/core/kafka/factory/internal/AbstractProducerPropertiesBuilder.java
+/Users/zhangjun/Documents/code/waiqin365/code/core/kafka/src/main/java/com/framework/core/kafka/exception/KafkaException.java
+/Users/zhangjun/Documents/code/waiqin365/code/core/kafka/src/main/java/com/framework/core/kafka/factory/internal/KafkaExecutorCallback.java
+/Users/zhangjun/Documents/code/waiqin365/code/core/kafka/src/main/java/com/framework/core/kafka/KafkaMessageSender.java
+/Users/zhangjun/Documents/code/waiqin365/code/core/kafka/src/main/java/com/framework/core/kafka/AbstractKafkaConsumerExecutor.java

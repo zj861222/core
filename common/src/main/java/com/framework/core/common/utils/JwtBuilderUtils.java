@@ -7,7 +7,9 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
+import com.framework.core.common.utils.jwt.CustomJwtParser;
 import com.framework.core.common.view.JwtInfo;
 
 import io.jsonwebtoken.Claims;
@@ -96,9 +98,43 @@ public class JwtBuilderUtils {
 	 */
 	public Claims parseJWT(String jwtToken) throws Exception {
 		SecretKey key = generalKey();
+		
 		Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(jwtToken).getBody();
 		return claims;
 	}
+	
+	/**
+	 *  解密jwt，即使过期，也不抛出异常
+	 * @param jwtToken
+	 * @return boolean里true表示过期；false表示没过期
+	 * @throws Exception
+	 */
+	public Pair<Boolean,Claims> parseJWTEx(String jwtToken) throws Exception {
+		SecretKey key = generalKey();
+		
+		Claims claims = new CustomJwtParser().setSigningKey(key).parseClaimsJws(jwtToken).getBody();
+		
+		if(claims == null) {
+			throw new IllegalArgumentException("illegal argument token:"+jwtToken);
+		}
+		
+        Date exp = claims.getExpiration();
+        
+        if (exp != null) {
+        	Date now = new Date();
+            if (now.equals(exp) || now.after(exp)) {
+     
+            	//表示过期
+            	return Pair.of(true, claims);
+            }
+        }
+        
+        return  Pair.of(false, claims);
+		
+	}
+		
+	
+
 
 	public String getTokenSecretKey() {
 		return tokenSecretKey;

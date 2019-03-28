@@ -14,6 +14,15 @@ import org.slf4j.LoggerFactory;
 
 public class DateUtil {
 
+	/** format脚本变量 */
+	public static final String TIME_PATTERN = "HH:mm:ss";
+	public static final String DATE_PATTENT = "yyyy-MM-dd";
+	public static final String DATETIME_PATTENT = "yyyy-MM-dd HH:mm:ss";
+	public static final String YEAR_PATTENT = "yyyy";
+	public static final String YEAR_MONTH_PATTENT = "yyyy-MM";
+	public static final String YYYYMMDD_PATTERN = "yyyyMMdd";
+	
+	
 	/**
 	 * 获取当前时间, 并且将当前时间转换称INT类型
 	 *
@@ -337,6 +346,9 @@ public class DateUtil {
 	}
 	
 	
+	
+	
+	
 	/**
 	 * 小时转为毫秒
 	 * @param hours
@@ -368,4 +380,76 @@ public class DateUtil {
 		
 		return 60 * 60 * 24 * days;
 	}
+	
+	
+	/**
+	 * 分钟转为毫秒
+	 * @param hours
+	 * @return
+	 */
+	public static long getMillisecondByMinutes(long min) {
+		
+		return 60 * 1000 * min;
+	}	
+	
+	
+	/**
+	 * 分钟转为秒
+	 * @param hours
+	 * @return
+	 */
+	public static long getSecondByMinutes(long min) {
+		
+		return 60  * min;
+	}	
+	
+	
+	/**
+	 *  计算指定时间 N minutes之后的时间
+	 * @param date
+	 * @param minutes
+	 * @return
+	 */
+	public static Date getDateAfterMinutes(Date date,long minutes) {
+		
+		int minuts = Integer.parseInt(String.valueOf(minutes));
+		
+		return getDateAfterMinutes(date, minuts);
+ 
+	}
+	
+	
+	
+	/**
+	 *  计算指定时间 N minutes之后的时间
+	 * @param date
+	 * @param minutes
+	 * @return
+	 */
+	public static Date getDateAfterMinutes(Date date,int minutes) {
+		
+	    Calendar   calendar   =  Calendar.getInstance();
+	    calendar.setTime(date); 
+	    calendar.add(Calendar.MINUTE,minutes);
+	    return calendar.getTime();    
+	}	
+	
+	
+	
+	
+	/**
+	 *  计算指定时间 N minutes之前的时间
+	 * @param date
+	 * @param minutes
+	 * @return
+	 */
+	public static Date getDateBeforeMinutes(Date date,int minutes) {
+		
+	    Calendar   calendar   =  Calendar.getInstance();
+	    calendar.setTime(date); 
+	    calendar.add(Calendar.MINUTE,-minutes);
+	    return calendar.getTime();    
+	}	
+
+	
 }

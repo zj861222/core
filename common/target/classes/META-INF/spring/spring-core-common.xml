@@ -11,20 +11,26 @@
 
 
     <!-- rest template -->
-    <!-- 
-    <bean id="common-httpClient" class="com.framework.core.common.http.HttpClientsFactory">
-        <property name="connectionRequestTimeout" value="${service.call.connectReqTimeout:6000}"/>
-        <property name="socketTimeout" value="${service.call.socketTimeout:6000}"/>
-        <property name="connectionTimeout" value="${service.call.connectTimeout:6000}"/>
-        <property name="maxTotal" value="${service.call.maxTotal:200}"/>
-        <property name="defaultMaxPerRoute" value="${service.call.defaultMaxPerRoute:100}"/>
+    <bean id="common-httpClient" class="com.framework.core.common.utils.HttpClientsFactory">
+        <property name="connectionRequestTimeout" value="${httpcomponents.connectReqTimeout:6000}"/>
+        <property name="socketTimeout" value="${httpcomponents.socketTimeout:6000}"/>
+        <property name="connectionTimeout" value="${httpcomponents.connectTimeout:6000}"/>
+        <property name="maxTotal" value="${httpcomponents.maxTotal:200}"/>
+        <property name="defaultMaxPerRoute" value="${httpcomponents.defaultMaxPerRoute:100}"/>
     </bean>
-    -->
-
+  
 
     <bean id="jwtBuilderUtils" class="com.framework.core.common.utils.JwtBuilderUtils">
         <property name="tokenSecretKey" value="${token.secret.key:7786df7fc3a34e26a61c034d5ec123as}"/>
     </bean>
 
 
+   <bean id = "httpClientUtils" class = "com.framework.core.common.utils.HttpClientUtils"> 
+        <property name="closeableHttpClient" ref="common-httpClient"/>
+    </bean>
+    
+    
+    <bean id = "timerTaskExecutor" class = "com.framework.core.common.timer.TimerTaskExecutor" destroy-method="close"/>
+      
+    
 </beans>

@@ -1,0 +1,38 @@
+{
+	
+    "brand":{
+
+
+        "_all":{
+            "enabled":false
+        },
+
+        "_source": {
+            "enabled":true
+        },
+
+        "dynamic": "strict",
+
+                             
+        "properties":{
+
+            "id": {
+                "type": "long"
+            },
+
+            "hotKeyword":{
+                 "type": "keyword"
+            },
+
+            "brandKeyword":{
+                 "type": "text"
+            },
+
+            "brandName":{
+                 "type": "text"
+            }
+
+        }
+    }
+
+}

@@ -1,13 +1,13 @@
 package com.framework.core.alarm.event;
 
+import com.framework.core.alarm.EventTypeEnum;
+
 /**
  *   服务提供的restful接口访问事件
  *
  * 
  */
 public class ServiceAccessEvent extends CommonEvent {
-
-
 
 
     /**
@@ -19,9 +19,11 @@ public class ServiceAccessEvent extends CommonEvent {
     private final String stack;
 
 
-
+    private long userId;
     //来源于哪个接口？
     private String srcService;
+    
+    private long tenantId = -1;
 
     /**
      * Create a new ApplicationEvent.
@@ -37,6 +39,7 @@ public class ServiceAccessEvent extends CommonEvent {
         this.cost = cost;
         this.response_code = response_code;
         this.stack = stack;
+        
     }
 
     public long getCost() {
@@ -46,12 +49,22 @@ public class ServiceAccessEvent extends CommonEvent {
     public long getResponse_code() {
         return response_code;
     }
+    
+    
 
     public String getStack() {
         return stack;
     }
 
-    public void setSrcService(String srcService) {
+    public long getTenantId() {
+		return tenantId;
+	}
+
+	public void setTenantId(long tenantId) {
+		this.tenantId = tenantId;
+	}
+
+	public void setSrcService(String srcService) {
         this.srcService = srcService;
     }
 
@@ -59,4 +72,17 @@ public class ServiceAccessEvent extends CommonEvent {
         return srcService;
     }
 
+
+	public long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(long userId) {
+		this.userId = userId;
+	}
+
+	@Override
+	public EventTypeEnum getEventType() {
+		return EventTypeEnum.EVENT_TYPE_SERVICE_ACCESS;
+	}
 }

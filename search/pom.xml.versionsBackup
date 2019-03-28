@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.framework.core</groupId>
+		<artifactId>waiqin365-core</artifactId>
+		<version>0.0.37</version>
+	</parent>
+
+	<groupId>com.framework.core</groupId>
+	<artifactId>waiqin365-core-search</artifactId>
+	<name>waiqin365-core-search</name>
+	<url>http://maven.apache.org</url>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>com.framework.core</groupId>
+			<artifactId>waiqin365-core-common</artifactId>
+		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-elasticsearch -->
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-elasticsearch</artifactId>
+			<!--  <version>3.0.2.RELEASE</version>-->
+			<version>2.1.9.RELEASE</version>
+			
+			
+		</dependency>
+
+
+
+
+	</dependencies>
+</project>

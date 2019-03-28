@@ -2,14 +2,12 @@ package com.framework.core.cache.redis.proxy.jedis.impl;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.TimeoutUtils;
-import org.springframework.util.Assert;
+
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -39,6 +37,7 @@ public class JedisClientImpl implements JedisClient {
 	@Override
 	public void hashSet(final String key, final String hashKey, final Object value) {
 
+				
 		jedisExcuteTemplate.excute(new Callback() {
 			byte[] objSeria = SerializationUtil.serialize(value);
 
@@ -89,16 +88,14 @@ public class JedisClientImpl implements JedisClient {
 		});
 
 	}
-	
-	
-	
+
 	@Override
 	public void delete(final Collection<String> keys) {
 
-		if(CollectionUtils.isEmpty(keys)) {
+		if (CollectionUtils.isEmpty(keys)) {
 			return;
 		}
-		
+
 		jedisExcuteTemplate.excute(new Callback() {
 
 			public Object command(RedisConnection redisConnection) {
@@ -109,9 +106,7 @@ public class JedisClientImpl implements JedisClient {
 		});
 
 	}
-	
-	
-	
+
 	private byte[][] rawKeys(Collection<String> keys) {
 		final byte[][] rawKeys = new byte[keys.size()][];
 
@@ -122,19 +117,15 @@ public class JedisClientImpl implements JedisClient {
 
 		return rawKeys;
 	}
-	
-	
+
 	private byte[] rawKey(String key) {
 
 		return key.getBytes();
 	}
 
-	
-
 	@Override
 	public void expire(final String key, final long timeout, final TimeUnit unit) {
-		
-		
+
 		jedisExcuteTemplate.excute(new Callback() {
 
 			public Object command(RedisConnection redisConnection) {
@@ -143,35 +134,31 @@ public class JedisClientImpl implements JedisClient {
 
 			}
 		});
-		
+
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public Map<String, Object> entries(String key) {
 
-		
-		if(StringUtils.isEmpty(key)) {
+		if (StringUtils.isEmpty(key)) {
 			return null;
 		}
 
-		
 		final byte[] rawKey = key.getBytes();
-		
+
 		return (Map<String, Object>) jedisExcuteTemplate.excute(new Callback() {
 
 			public Object command(RedisConnection redisConnection) {
 
-				Map<byte[], byte[]> entries =  redisConnection.hGetAll(rawKey);
-				
+				Map<byte[], byte[]> entries = redisConnection.hGetAll(rawKey);
+
 				return deserializeHashMap(entries);
 
 			}
 		});
 	}
-	
-	
-	
+
 	@SuppressWarnings("unchecked")
 	Map<String, Object> deserializeHashMap(Map<byte[], byte[]> entries) {
 		// connection in pipeline/multi mode

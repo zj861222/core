@@ -42,14 +42,30 @@
     </bean>
 
 
+    <bean id="sessionExceptionEventHandler" class="com.framework.core.alarm.event.handler.SessionExceptionEventHandler">
+        <property name="eventReporter" ref="eventReporter"/>
+        <property name="tag_context" value="${web.context:default}"/>
+    </bean>
+
+
     
-    <bean id="strutsThreadProfileInterceptor" class="com.framework.core.alarm.monitor.interceptor.ThreadProfileInterceptor4Struts">
-        <property name="threshold" value="${profile.threshold:500}"/>
+    <bean id="agentServiceEventHandler" class="com.framework.core.alarm.event.handler.AgentServiceEventHandler">
+        <property name="eventReporter" ref="eventReporter"/>
+        <property name="tag_context" value="${web.context:default}"/>
+    </bean>
+
+
+   <bean id="abstractThreadProfileInterceptor" class="com.framework.core.alarm.monitor.interceptor.AbstractThreadProfileInterceptor" abstract="true">
+         <property name="threshold" value="${profile.threshold:2000}"/>
+         
+         <property name="alarmExcludeHandler" ref="alarmExcludeHandler"/>
+    </bean> 
+    
+    <bean id="strutsThreadProfileInterceptor" class="com.framework.core.alarm.monitor.interceptor.ThreadProfileInterceptor4Struts" parent="abstractThreadProfileInterceptor">
     </bean>
     
     
-    <bean id="springMvcThreadProfileInterceptor" class="com.framework.core.alarm.monitor.interceptor.ThreadProfileInterceptor4SpringMvc">
-        <property name="threshold" value="${profile.threshold:500}"/>
+    <bean id="springMvcThreadProfileInterceptor" class="com.framework.core.alarm.monitor.interceptor.ThreadProfileInterceptor4SpringMvc" parent="abstractThreadProfileInterceptor">
     </bean>    
     
     
@@ -67,5 +83,51 @@
     </aop:config>
     -->
     
+    
+    <bean id="EventDeterminater" class="com.framework.core.alarm.EventDeterminater">
+        <property name="serviceAcessEventOpen" value="${alarm.serviceAcessEvent.open:true}"/>
+        <property name="exceptionEventOpen" value="${alarm.exceptionEvent.open:true}"/>
+        <property name="sessionExceptionEventOpen" value="${alarm.sessionExceptionEvent.open:true}"/>
+        <property name="agentServiceAccessOpen" value="${alarm.agentServiceAccessEvent.open:true}"/>
+        <property name="rabbitMqSendEventOpen" value="${alarm.rabbitMqSendEventOpen.open:true}"/>
+    </bean>    
+    
+
+    <bean id="EventPublisherUtils" class="com.framework.core.alarm.EventPublisherUtils"/>
+
+
+    <!--  serviceaccess 排除 -->
+    <bean id="serviceAccessExcludeMap" class="com.framework.core.error.exception.internel.yml.MyYamlMapFactoryBean">
+        <property name="resources">
+            <list>
+                <value>classpath*:META-INF/alarmexclude/service-access-exclude*.yml</value>
+            </list>
+        </property>
+    </bean>
+
+   <!--报警排除-->
+   <bean id="alarmExcludeHandler" class="com.framework.core.alarm.event.exclude.AlarmExcludeHandler" >
+       <property name="serviceAccessExcludeMap" ref="serviceAccessExcludeMap"/>
+   </bean>
+    
+
+
+    <bean id="serviceCallEventHandler" class="com.framework.core.alarm.event.handler.ServiceCallEventHandler">
+        <property name="eventReporter" ref="eventReporter"/>
+        <property name="tag_context" value="${web.context:default}"/>
+    </bean>
+
+    <bean id="elasticJobFailedEventHandler" class="com.framework.core.alarm.event.handler.ElasticJobFailedEventHandler">
+        <property name="eventReporter" ref="eventReporter"/>
+        <property name="tag_context" value="${web.context:default}"/>
+    </bean>
+
+
+    <!-- 大sql查询 -->
+    <bean id="bigSqlQueryResultEventHandler" class="com.framework.core.alarm.event.handler.BigSqlQueryResultEventHandler">
+        <property name="eventReporter" ref="eventReporter"/>
+        <property name="tag_context" value="${web.context:default}"/>
+    </bean>
+
 
 </beans>

@@ -18,6 +18,7 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 
+import com.alibaba.fastjson.JSON;
 import com.framework.core.zookeeper.exception.ZKConnectException;
 import com.framework.core.zookeeper.listener.CustomerZKListenerMgr;
 
@@ -54,8 +55,9 @@ public class ZookeeperClientFactory implements FactoryBean<CuratorFramework>, In
 
 		builder.connectString(connectString);
 
+		//设置重连策略，每次重试会增加重试时间1000，最多重试5次
 		if (retryPolicy == null) {
-			retryPolicy = new ExponentialBackoffRetry(1000, 3);
+			retryPolicy = new ExponentialBackoffRetry(1000, 5);
 		}
 		builder.retryPolicy(retryPolicy);
 
@@ -75,6 +77,8 @@ public class ZookeeperClientFactory implements FactoryBean<CuratorFramework>, In
 
 			@Override
 			public void stateChanged(CuratorFramework client, ConnectionState newState) {
+				
+				logger.info("ZookeeperClientFactory  Zookeeper connect stat change ! newState ="+JSON.toJSONString(newState));
 				if (newState == ConnectionState.CONNECTED || newState == ConnectionState.RECONNECTED) {
 					downLactch.countDown();
 					logger.info("with zk server connection is ok!!!!");
@@ -100,7 +104,8 @@ public class ZookeeperClientFactory implements FactoryBean<CuratorFramework>, In
 	}
 
 	public void destroy() throws Exception {
-		curator.close();
+		if(curator!=null)
+		      curator.close();
 	}
 
 	public CuratorFramework getObject() throws Exception {

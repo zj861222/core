@@ -1,9 +1,7 @@
 package com.framework.core.test.zookeeper.listener;
 
 
-import javax.annotation.Resource;
 
-import org.apache.curator.framework.CuratorFramework;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
@@ -43,12 +41,12 @@ public class DatesourceListener implements ZkNodeListener {
 	@Override
 	public boolean accept(ZkNodeData nodeData) {
 		System.out.println("DatesourceListener---childUpdated--,data is:"+JSON.toJSONString(nodeData));
-		return false;
+		return true;
 	}
 
 	@Override
 	public String getMonitorPath() {
-		return "/waiqin365/datasource";
+		return "/waiqin365/datasource/globalchange";
 	}
 	
 }

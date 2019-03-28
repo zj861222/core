@@ -2,6 +2,7 @@ package com.framework.core.web.session.token.view;
 
 import java.io.Serializable;
 
+import com.framework.core.web.session.token.TokenDebugHelper;
 import com.framework.core.web.session.token.constants.SourceTypeEnum;
 
 /**
@@ -104,6 +105,25 @@ public  class BaseTokenSubject implements Serializable {
 	}
 	
 
+	/**
+	 * 实际的使用的token时间，考虑debug模式
+	 * @return
+	 */
+	public long getRealTokenExpireMinute() {
+
+		return TokenDebugHelper.isTokenDebugEnable()?TokenDebugHelper.getTokenDebugExpireMinute():this.tokenExpireHours*60;
+		
+	}
+	
+	/**
+	 * 实际的使用的refresh token时间，考虑debug模式
+	 * @return
+	 */
+	public long getRealRefreshTokenExpireMinute() {
+		
+		return TokenDebugHelper.isTokenDebugEnable()?TokenDebugHelper.getRefreshTokenDebugExpireMinute():this.refreshTokenExpireHours*60;
+
+	}
 }
 
 

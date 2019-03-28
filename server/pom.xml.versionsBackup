@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.framework.core</groupId>
+		<artifactId>waiqin365-core</artifactId>
+        <version>0.0.8</version>
+	</parent>
+
+    <groupId>com.framework.core</groupId>
+    <artifactId>waiqin365-core-server-test</artifactId>
+    <name>waiqin365-core-server-test</name>
+    <url>http://maven.apache.org</url>
+
+    <dependencies>
+
+        <dependency>
+                <groupId>com.framework.core</groupId>
+                <artifactId>waiqin365-core-web</artifactId>
+        </dependency>
+
+
+        <dependency>
+                <groupId>org.codehaus.janino</groupId>
+                <artifactId>janino</artifactId>
+        </dependency>
+
+    </dependencies>
+</project>

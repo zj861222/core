@@ -1,0 +1,216 @@
+{
+    "tblproduct": {
+        "_all": {
+            "enabled": false
+        },
+        "_source": {
+            "enabled": true
+        },
+        "_id": {
+            "path": "product_skn"
+        },
+        "properties": {
+            "product_skn": {
+                "type": "integer"
+            },
+            "product_name": {
+                "type": "string",
+                "store": false,
+                "index_analyzer": "mmseg_complex",
+                "search_analyzer": "mmseg_complex"
+            },
+            "content": {
+                "type": "string",
+                "index":    "not_analyzed"
+            },
+            "product_url": {
+                "type": "string",
+                "index":    "not_analyzed"
+            },
+            "goods_price": {
+                "type": "double",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "create_time": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "source": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "brand_id": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "sort_one": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "sort_two": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "sort_three": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "sort_four": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "site_id": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "size_info": {
+                "type": "string",
+                "index":    "not_analyzed"
+            },
+            "is_limited": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "country_id": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "gender": {
+                "type": "string",
+                "index":    "not_analyzed",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "currency_id": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "tag_price": {
+                "type": "double",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "sell_price": {
+                "type": "double",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "got_price": {
+                "type": "double",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "status": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "weight": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "url_status": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "stock_status": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "update_time": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "shelf_time": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "offshelf_time": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "auto_shelf": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "order": {
+                "type": "long",
+                "doc_values": true,
+                "fielddata": {
+                    "format": "doc_values"
+                }
+            },
+            "color_ids": {
+                "type": "string",
+                "analyzer":"comma_spliter"
+            }
+        }
+    }
+}

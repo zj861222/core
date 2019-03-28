@@ -18,6 +18,7 @@ import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.data.redis.ExceptionTranslationStrategy;
 import org.springframework.data.redis.PassThroughExceptionTranslationStrategy;
 import org.springframework.data.redis.RedisConnectionFailureException;
+import org.springframework.data.redis.connection.RedisClusterConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisSentinelConnection;
 import org.springframework.data.redis.connection.jedis.JedisConnection;
@@ -45,6 +46,9 @@ public class MultJedisConnectionFactory implements InitializingBean, DisposableB
 
 	private static final Method SET_TIMEOUT_METHOD;
 	private static final Method GET_TIMEOUT_METHOD;
+	
+	
+	private static final String DEFAUL_NO_AUTH = "null";
 
 	static {
 
@@ -107,7 +111,10 @@ public class MultJedisConnectionFactory implements InitializingBean, DisposableB
 	}
 
 	public void setPassword(String password) {
-		this.password = password;
+		
+		if(!DEFAUL_NO_AUTH.equals(password)) {
+		    this.password = password;
+		} 
 	}
 
 	public List<Pool<Jedis>> getPools() {
@@ -350,6 +357,15 @@ public class MultJedisConnectionFactory implements InitializingBean, DisposableB
 
 	private int getTimeoutFrom(JedisShardInfo shardInfo) {
 		return (Integer) ReflectionUtils.invokeMethod(GET_TIMEOUT_METHOD, shardInfo);
+	}
+
+	
+	//
+	@Override
+	public RedisClusterConnection getClusterConnection()
+	{
+		//TODO 支持redis的自身的集群模式
+		return null;
 	}
 
 }

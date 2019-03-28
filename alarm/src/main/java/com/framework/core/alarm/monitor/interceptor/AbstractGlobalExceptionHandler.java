@@ -17,10 +17,11 @@ import com.framework.core.alarm.event.ServerExceptionEvent;
  */
 public abstract class AbstractGlobalExceptionHandler implements  ApplicationEventPublisherAware { 
 	
+	
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	
-    private   ApplicationEventPublisher publisher;
+    private  ApplicationEventPublisher publisher;
 
     
     @Override
@@ -35,7 +36,7 @@ public abstract class AbstractGlobalExceptionHandler implements  ApplicationEven
 	 */
 	protected void reportException(HttpServletRequest request,Exception exception) {
 		
-        logger.error("*****************************unknown system exception happened at:{}", request.getRequestURI());
+//        logger.error("*****************************unknown system exception happened at:{}", request.getRequestURI());
 		
         publisher.publishEvent(new ServerExceptionEvent(request.getRequestURI(), exception));
 

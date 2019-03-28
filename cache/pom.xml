@@ -5,20 +5,20 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.framework.core</groupId>
-		<artifactId>core</artifactId>
-		<version>0.0.3</version>
+		<artifactId>framework-core</artifactId>
+        <version>0.0.56</version>
 	</parent>
 
     <groupId>com.framework.core</groupId>
-    <artifactId>core-cache</artifactId>
-    <name>core-cache</name>
+    <artifactId>framework-core-cache</artifactId>
+    <name>framework-core-cache</name>
     <url>http://maven.apache.org</url>
 
     <dependencies>
 
         <dependency>
                 <groupId>com.framework.core</groupId>
-                <artifactId>core-common</artifactId>
+                <artifactId>framework-core-common</artifactId>
         </dependency>
 
 
@@ -26,6 +26,7 @@
 	    <dependency>
 		        <groupId>javax.servlet</groupId>
 		        <artifactId>javax.servlet-api</artifactId>
+                <scope>provided</scope>		        
 	    </dependency>
 
 

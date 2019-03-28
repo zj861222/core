@@ -5,32 +5,47 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.framework.core</groupId>
-		<artifactId>core</artifactId>
-		<version>0.0.3</version>
+		<artifactId>framework-core</artifactId>
+        <version>0.0.56</version>
 	</parent>
 
     <groupId>com.framework.core</groupId>
-    <artifactId>core-alarm</artifactId>
-    <name>core-alarm</name>
+    <artifactId>framework-core-alarm</artifactId>
+    <name>framework-core-alarm</name>
     <url>http://maven.apache.org</url>
 
     <dependencies>
 
         <dependency>
                 <groupId>com.framework.core</groupId>
-                <artifactId>core-common</artifactId>
+                <artifactId>framework-core-common</artifactId>
         </dependency>
 
 
         <dependency>
                 <groupId>org.influxdb</groupId>
                 <artifactId>influxdb-java</artifactId>
-         </dependency>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.google.code.gson</groupId>
+                        <artifactId>gson</artifactId>
+                    </exclusion>
+
+                </exclusions>
+        </dependency>
 
 	    <dependency>
 		        <groupId>javax.servlet</groupId>
 		        <artifactId>javax.servlet-api</artifactId>
+		        <scope>provided</scope>
+		        
 	    </dependency>
+
+
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+            </dependency>
 
 
 

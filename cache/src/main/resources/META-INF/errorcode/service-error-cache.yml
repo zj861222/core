@@ -13,3 +13,21 @@
 100003005:
   message: "Redis 加锁失败"  
 
+100003006:
+  message: "Redis value序列化失败"
+  
+100003007:
+  message: "Redis value反序列化失败" 
+  
+100003008:    
+  message: "Redis获取连接失败" 
+
+100003009:
+  message: "Redis command execute failed" 
+
+100003010:
+  message: "Redis Message 发送失败" 
+  
+100003011:
+  message: "Redis Message 接收处理失败"   
+  
